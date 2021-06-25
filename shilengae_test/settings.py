@@ -76,6 +76,10 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
