@@ -25,7 +25,7 @@ SECRET_KEY = '7x$$&w*s7n)@l0df#cemg2(kge=i(fvwgud(d*ewul9y(5t+mm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'shilengae-server.herokuapp.com']
 
 
 # Application definition
