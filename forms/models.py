@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from model_utils import Choices
+from jsonfield import JSONField
 
 # Create your models here.
 class Form(models.Model):
@@ -17,7 +18,7 @@ class FormField(models.Model):
                              related_name='form',
                              null=True,
                              on_delete=models.SET_NULL)
-    data = models.JSONField()
+    data = JSONField()
 
 class FormFieldResponse(models.Model):
     form_field = models.ForeignKey(FormField,
@@ -25,5 +26,5 @@ class FormFieldResponse(models.Model):
                                    null=True,
                                    on_delete=models.SET_NULL)
 
-    data = models.JSONField()
+    data = JSONField()
     # test
