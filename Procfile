@@ -1,1 +1,1 @@
-web: gunicorn shilengae_test.wsgi
+web:gunicorn shilengae_test.wsgi
