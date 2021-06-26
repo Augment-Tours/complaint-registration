@@ -3,9 +3,9 @@ from api.models import Timestampable
 
 
 class Word(Timestampable):
+    # The definition that this word belongs to
     definition = models.CharField(max_length=500)
 
-# Create your models here.
 class Translation(Timestampable):
     # Contains a short hand of what language this translation is
     # Eg. AM, EN, FR, DE -> (Amharic, English, France, Deutsch)

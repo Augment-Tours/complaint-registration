@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True, db_index=True, null=True)),
                 ('updated_at', models.DateTimeField(blank=True, db_index=True, null=True)),
-                ('language', models.CharField(max_length=3)),
+                ('languages', models.CharField(max_length=3)),
                 ('name', models.CharField(max_length=500)),
                 ('word', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='word', to='language.Word')),
             ],
