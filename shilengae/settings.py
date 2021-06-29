@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'api',
 
     #
-    'language',
+    # 'language',
+
+    #
+    'locations'
 ]
 
 MIDDLEWARE = [
