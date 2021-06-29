@@ -4,7 +4,9 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from api.enums import STATUS
+from api.test_utils import create_country
 from locations.models import Country
+
 
 class CreateCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
@@ -28,8 +30,8 @@ class CreateCountryApiViewTests(APITestCase):
 
         response = self.post(body=data)
 
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        self.assertEquals(Country.objects.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Country.objects.count(), 1)
     
     def test_no_currency(self):
         """
@@ -45,8 +47,8 @@ class CreateCountryApiViewTests(APITestCase):
 
         response = self.post(body=data)
 
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEquals(Country.objects.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Country.objects.count(), 0)
     
     def test_no_name(self):
         """
@@ -62,8 +64,8 @@ class CreateCountryApiViewTests(APITestCase):
 
         response = self.post(body=data)
 
-        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEquals(Country.objects.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Country.objects.count(), 0)
     
     def test_no_status(self):
         """
@@ -79,9 +81,9 @@ class CreateCountryApiViewTests(APITestCase):
 
         response = self.post(body=data)
 
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        self.assertEquals(Country.objects.count(), 1)
-        self.assertEquals(Country.objects.first().status, STATUS.ACTIVE)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Country.objects.count(), 1)
+        self.assertEqual(Country.objects.first().status, STATUS.ACTIVE)
     
     def test_no_timezone(self):
         """
@@ -97,9 +99,64 @@ class CreateCountryApiViewTests(APITestCase):
 
         response = self.post(body=data)
 
-        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
-        self.assertEquals(Country.objects.count(), 1)
-        self.assertEquals(Country.objects.first().timezone, None)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Country.objects.count(), 1)
+        self.assertEqual(Country.objects.first().timezone, None)
     
     
     
+class TestEditCountryApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
+
+    def post(self, body=None):
+        url = reverse('locations:edit_country')
+        return self.client.post(url, body, format="json")
+
+    def test_edit_country_name(self):
+        """
+        Test successfully editing a countries name
+        """
+        data = {
+            'country_id': self.country.id,
+            'name': 'Ethiopia'
+        }
+
+        response = self.post(body=data)
+
+        self.country.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.country.name, 'Ethiopia')
+    
+    def test_edit_country_symbol(self):
+        """
+        Test successfully editing a countries symbol
+        """
+        data = {
+            'country_id': self.country.id,
+            'symbol': 'UAE'
+        }
+
+        response = self.post(body=data)
+
+        self.country.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.country.symbol, 'UAE')
+    
+    def test_edit_country_status(self):
+        """
+        Test successfully editing countries status
+        """
+        data = {
+            'country_id': self.country.id,
+            'status': STATUS.INACTIVE,
+        }
+
+        response = self.post(body=data)
+
+        self.country.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.country.status, STATUS.INACTIVE)
