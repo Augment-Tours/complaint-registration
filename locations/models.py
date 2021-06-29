@@ -14,7 +14,7 @@ class Country(Timestampable):
     symbol = models.CharField(max_length=5)
 
     # The timezone symbol of the country
-    timezone = models.CharField(max_length=50)
+    timezone = models.CharField(max_length=50, blank=True, null=True)
     
     # The status of this country
     status = models.CharField(choices=STATUS, max_length=10, default=STATUS.ACTIVE)
