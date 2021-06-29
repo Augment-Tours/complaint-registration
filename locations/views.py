@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
@@ -29,4 +30,6 @@ class SearchCountryApiView(generics.GenericAPIView):
     serializer_class = CountrySerializer
 
     def get(self, request, *args, **kwargs):
-        return
+        search_term = request.query_params.get('search_term')
+        return Country.objects.filter(Q(name__icontains=search_term, 
+                                        symbol__icontains=search_term))

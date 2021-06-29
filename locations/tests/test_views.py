@@ -177,3 +177,29 @@ class ListCountryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['id'], self.country.id)
+
+class SearchCountryApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
+
+    def get(self, search_term):
+        url = reverse('locations:search_country') + "?search_term=" + search_term
+        return self.client.get(url)
+    
+    def test_successfully_search_countries_by_country_name(self):
+        """
+        Test successfully search countries by country name
+        """
+        response = self.get('United')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.country.id)
+
+    def test_successfully_search_countries_by_country_symbol(self):
+        """
+        Test successfully search countries by their country symbol
+        """
+        response = self.get('ETH')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.country.id)

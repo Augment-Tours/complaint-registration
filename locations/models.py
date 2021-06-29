@@ -19,6 +19,9 @@ class Country(Timestampable):
     # The status of this country
     status = models.CharField(choices=STATUS, max_length=10, default=STATUS.ACTIVE)
 
+    class Meta:
+        ordering = ['name']
+
 class Region(Timestampable):
     # Name of the Region (TODO: link to word)
     name = models.CharField(max_length=100)
