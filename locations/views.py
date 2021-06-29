@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
 
-# Create your views here.
+from .models import Region, City, Country
+from .serializers import CountrySerializer
+
+class CreateCountryApiView(generics.CreateAPIView):
+    serializer_class = CountrySerializer
