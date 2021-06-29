@@ -5,7 +5,7 @@ from rest_framework import status
 
 from api.enums import STATUS
 from api.test_utils import create_country
-from locations.models import Country
+from locations.models import Country, Region
 
 
 class CreateCountryApiViewTests(APITestCase):
@@ -103,8 +103,47 @@ class CreateCountryApiViewTests(APITestCase):
         self.assertEqual(Country.objects.count(), 1)
         self.assertEqual(Country.objects.first().timezone, None)
     
+class CreateRegionApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.country = create_country("Ethiopia", "ETB", "ETH", "EAT", STATUS.ACTIVE)
+
+    def post(self, body=None):
+        url = reverse('locations:create_region')
+        return self.client.post(url, body, format="json")
     
+    def test_success(self):
+        """
+        Successfully create a region
+        """
+        data = {
+            'name': "Oromia",
+            'symbol': "OR",
+            'country_id': self.country.id,
+            'status': STATUS.ACTIVE
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Region.objects.count(), 1)
+        self.assertEqual(Region.objects.first().name, 'Oromia')
     
+    def test_no_country(self):
+        """
+        If there is no country provided then region creation should fail
+        """
+        data = {
+            'name': "Oromia",
+            'symbol': "OR",
+            # 'country_id': self.country.id,
+            'status': STATUS.ACTIVE
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(Region.objects.count(), 0)
+
 class EditCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
