@@ -105,7 +105,7 @@ class CreateCountryApiViewTests(APITestCase):
     
     
     
-class TestEditCountryApiViewTests(APITestCase):
+class EditCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
 
@@ -160,3 +160,20 @@ class TestEditCountryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.country.status, STATUS.INACTIVE)
+
+class ListCountryApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
+
+    def get(self):
+        url = reverse('locations:list_country')
+        return self.client.get(url)
+    
+    def test_successfully_list_countries(self):
+        """
+        Test successfully list countries
+        """
+        response = self.get()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.country.id)

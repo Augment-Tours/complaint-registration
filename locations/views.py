@@ -20,3 +20,13 @@ class EditCountryApiView(generics.GenericAPIView):
         serializer.save()
 
         return Response(serializer.data, status.HTTP_200_OK)
+
+class ListCountryApiView(generics.ListAPIView):
+    serializer_class = CountrySerializer
+    queryset = Country.objects.all()
+
+class SearchCountryApiView(generics.GenericAPIView):
+    serializer_class = CountrySerializer
+
+    def get(self, request, *args, **kwargs):
+        return
