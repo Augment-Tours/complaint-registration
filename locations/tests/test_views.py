@@ -272,6 +272,23 @@ class ListCountryApiViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['id'], self.country.id)
 
+class ListRegionApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.region = create_region("test region", "TEST", "CUR")
+
+    def get(self):
+        url = reverse('locations:list_region')
+        return self.client.get(url)
+    
+    def test_successfully_list_countries(self):
+        """
+        Test successfully list countries
+        """
+        response = self.get()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.region.id)
+
 class SearchCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
@@ -297,3 +314,48 @@ class SearchCountryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['id'], self.country.id)
+    
+    def test_search_no_results(self):
+        """
+        Test if it's a not valid search term should return empty results
+        """
+        response = self.get('xyz')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 0)
+
+
+class SearchRegionApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.region = create_region("test region", "TEST", "CUR")
+
+    def get(self, search_term):
+        url = reverse('locations:search_region') + "?search_term=" + search_term
+        return self.client.get(url)
+    
+    def test_successfully_search_countries_by_region_name(self):
+        """
+        Test successfully search countries by region name
+        """
+        response = self.get('region')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.region.id)
+
+    def test_successfully_search_countries_by_region_symbol(self):
+        """
+        Test successfully search countries by their region symbol
+        """
+        response = self.get('TEST')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.region.id)
+    
+    def test_search_no_results(self):
+        """
+        Test if it's a not valid search term should return empty results
+        """
+        response = self.get('xyz')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 0)

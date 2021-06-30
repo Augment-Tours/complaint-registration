@@ -63,10 +63,18 @@ class ListRegionApiView(generics.ListAPIView):
     serializer_class = RegionSerializer
     queryset = Region.objects.all()
 
-class SearchCountryApiView(generics.GenericAPIView):
+class SearchCountryApiView(generics.ListAPIView):
     serializer_class = CountrySerializer
 
-    def get(self, request, *args, **kwargs):
-        search_term = request.query_params.get('search_term')
-        return Country.objects.filter(Q(name__icontains=search_term, 
-                                        symbol__icontains=search_term))
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search_term')
+        return Country.objects.filter(Q(name__icontains=search_term) | \
+                                        Q(symbol__icontains=search_term))
+
+class SearchRegionApiView(generics.ListAPIView):
+    serializer_class = RegionSerializer
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search_term')
+        return Region.objects.filter(Q(name__icontains=search_term) |
+                                        Q(symbol__icontains=search_term))
