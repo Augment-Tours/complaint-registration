@@ -35,9 +35,33 @@ class EditCountryApiView(generics.GenericAPIView):
 
         return Response(serializer.data, status.HTTP_200_OK)
 
+class EditRegionApiView(generics.GenericAPIView):
+    serializer_class = RegionSerializer
+
+    def post(self, request, *args, **kwargs):
+        region_id = request.data.get("region_id")
+        region = get_object_or_404(Region, pk=region_id)
+        
+        country_id = request.data.get('country_id')
+
+        
+        serializer = self.get_serializer(region, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        if country_id:
+            country = get_object_or_404(Country, pk=country_id)
+            serializer.save(country=country)
+        else:
+            serializer.save()
+
+        return Response(serializer.data, status.HTTP_200_OK)
+
 class ListCountryApiView(generics.ListAPIView):
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
+
+class ListRegionApiView(generics.ListAPIView):
+    serializer_class = RegionSerializer
+    queryset = Region.objects.all()
 
 class SearchCountryApiView(generics.GenericAPIView):
     serializer_class = CountrySerializer

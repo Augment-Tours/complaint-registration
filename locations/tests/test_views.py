@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from api.enums import STATUS
-from api.test_utils import create_country
+from api.test_utils import create_country, create_region
 from locations.models import Country, Region
 
 
@@ -199,6 +199,61 @@ class EditCountryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.country.status, STATUS.INACTIVE)
+
+class EditRegionApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.region = create_region("test", "AM", STATUS.ACTIVE)
+        self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
+
+
+    def post(self, body=None):
+        url = reverse('locations:edit_region')
+        return self.client.post(url, body, format="json")
+
+    def test_successfully_edit_region_name(self):
+        """
+        """
+        data = {
+            'region_id': self.region.id,
+            'name': 'Amhara'
+        }
+
+        response = self.post(body=data)
+
+        self.region.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.region.name, 'Amhara')
+    
+    def test_successfully_edit_region_symbol(self):
+        """
+        """
+        data = {
+            'region_id': self.region.id,
+            'symbol': 'test'
+        }
+
+        response = self.post(body=data)
+
+        self.region.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.region.symbol, 'test')
+    
+    def test_successfully_edit_region_country(self):
+        """
+        """
+        data = {
+            'region_id': self.region.id,
+            'country_id': self.country.id
+        }
+
+        response = self.post(body=data)
+
+        self.region.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.region.country.id, self.country.id)
 
 class ListCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
