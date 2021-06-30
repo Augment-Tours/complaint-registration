@@ -11,3 +11,11 @@ class Word(Timestampable):
     
     # The default value if the word is not to be found in the language pack
     default = models.CharField(max_length=200)
+
+class TranslationPack(Timestampable):
+    version = models.IntegerField()
+
+    name = models.CharField(max_length=50)
+
+    # json files that are translation packs
+    translation_file = models.FileField(upload_to='translation_packs')
