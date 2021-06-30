@@ -57,3 +57,6 @@ class City(Timestampable):
 
     # The status of this city
     status = models.CharField(choices=STATUS, max_length=10, default=STATUS.ACTIVE)
+
+    class Meta:
+        ordering = ['name']

@@ -385,6 +385,24 @@ class ListRegionApiViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['id'], self.region.id)
 
+class ListCityApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.city = create_city("test city", "TEST", "CUR")
+
+    def get(self):
+        url = reverse('locations:list_city')
+        return self.client.get(url)
+    
+    def test_successfully_list_countries(self):
+        """
+        Test successfully list countries
+        """
+        response = self.get()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.city.id)
+
+
 class SearchCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
@@ -446,6 +464,41 @@ class SearchRegionApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['id'], self.region.id)
+    
+    def test_search_no_results(self):
+        """
+        Test if it's a not valid search term should return empty results
+        """
+        response = self.get('xyz')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 0)
+
+class SearchCityApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.city = create_city("test city", "TEST", "CUR")
+
+    def get(self, search_term):
+        url = reverse('locations:search_city') + "?search_term=" + search_term
+        return self.client.get(url)
+    
+    def test_successfully_search_countries_by_city_name(self):
+        """
+        Test successfully search countries by city name
+        """
+        response = self.get('city')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.city.id)
+
+    def test_successfully_search_countries_by_city_symbol(self):
+        """
+        Test successfully search countries by their city symbol
+        """
+        response = self.get('TEST')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.city.id)
     
     def test_search_no_results(self):
         """

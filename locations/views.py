@@ -94,6 +94,10 @@ class ListRegionApiView(generics.ListAPIView):
     serializer_class = RegionSerializer
     queryset = Region.objects.all()
 
+class ListCityApiView(generics.ListAPIView):
+    serializer_class = CitySerializer
+    queryset = City.objects.all()
+
 class SearchCountryApiView(generics.ListAPIView):
     serializer_class = CountrySerializer
 
@@ -109,3 +113,11 @@ class SearchRegionApiView(generics.ListAPIView):
         search_term = self.request.query_params.get('search_term')
         return Region.objects.filter(Q(name__icontains=search_term) |
                                         Q(symbol__icontains=search_term))
+
+class SearchCityApiView(generics.ListAPIView):
+    serializer_class = CitySerializer
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search_term')
+        return City.objects.filter(Q(name__icontains=search_term) |
+                                    Q(symbol__icontains=search_term))

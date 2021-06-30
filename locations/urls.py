@@ -2,8 +2,8 @@ from django.urls import include, path, re_path
 from rest_framework import routers
 from .views import CreateCountryApiView, CreateRegionApiView, CreateCityApiView, \
                     EditCountryApiView, EditRegionApiView, EditCityApiView, \
-                    ListCountryApiView, ListRegionApiView, \
-                    SearchCountryApiView, SearchRegionApiView
+                    ListCountryApiView, ListRegionApiView, ListCityApiView, \
+                    SearchCountryApiView, SearchRegionApiView, SearchCityApiView
 
 urlpatterns = [
     re_path(r'^country/create/$', CreateCountryApiView().as_view(), name='create_country'),
@@ -18,4 +18,6 @@ urlpatterns = [
     
     re_path(r'^city/create/$', CreateCityApiView().as_view(), name='create_city'),
     re_path(r'^city/edit/$', EditCityApiView().as_view(), name='edit_city'),
+    re_path(r'^city/all/$', ListCityApiView().as_view(), name='list_city'),
+    re_path(r'^city/search/$', SearchCityApiView().as_view(), name='search_city'),
 ]
