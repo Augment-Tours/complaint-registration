@@ -4,7 +4,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from .models import Region, City, Country
-from .serializers import CountrySerializer, RegionSerializer
+from .serializers import CountrySerializer, RegionSerializer, CitySerializer
 
 class CreateCountryApiView(generics.CreateAPIView):
     serializer_class = CountrySerializer
@@ -20,7 +20,20 @@ class CreateRegionApiView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(country=country)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class CreateCityApiView(generics.GenericAPIView):
+    serializer_class = CitySerializer
+
+    def post(self, request, *args, **kwargs):
+        region_id = request.data.get('region_id')
+        region = get_object_or_404(Region, pk=region_id)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(region=region)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class EditCountryApiView(generics.GenericAPIView):
     serializer_class = CountrySerializer
@@ -43,13 +56,31 @@ class EditRegionApiView(generics.GenericAPIView):
         region = get_object_or_404(Region, pk=region_id)
         
         country_id = request.data.get('country_id')
-
         
         serializer = self.get_serializer(region, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         if country_id:
             country = get_object_or_404(Country, pk=country_id)
             serializer.save(country=country)
+        else:
+            serializer.save()
+
+        return Response(serializer.data, status.HTTP_200_OK)
+
+class EditCityApiView(generics.GenericAPIView):
+    serializer_class = CitySerializer
+
+    def post(self, request, *args, **kwargs):
+        city_id = request.data.get("city_id")
+        city = get_object_or_404(City, pk=city_id)
+        
+        region_id = request.data.get('region_id')
+        
+        serializer = self.get_serializer(city, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        if region_id:
+            region = get_object_or_404(Region, pk=region_id)
+            serializer.save(region=region)
         else:
             serializer.save()
 

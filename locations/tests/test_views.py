@@ -4,8 +4,8 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from api.enums import STATUS
-from api.test_utils import create_country, create_region
-from locations.models import Country, Region
+from api.test_utils import create_country, create_region, create_city
+from locations.models import Country, Region, City
 
 
 class CreateCountryApiViewTests(APITestCase):
@@ -144,6 +144,48 @@ class CreateRegionApiViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Region.objects.count(), 0)
 
+class CreateCityApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.region = create_region("test", "AM", STATUS.ACTIVE)
+
+    def post(self, body=None):
+        url = reverse('locations:create_city')
+        return self.client.post(url, body, format="json")
+    
+    def test_success(self):
+        """
+        Successfully create a City
+        """
+        data = {
+            'name': "Addis Ababa",
+            'symbol': "AA",
+            'region_id': self.region.id,
+            'status': STATUS.ACTIVE
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(City.objects.count(), 1)
+        self.assertEqual(City.objects.first().name, 'Addis Ababa')
+    
+    def test_no_region(self):
+        """
+        If there is no region provided then region creation should fail
+        """
+        data = {
+            'name': "Oromia",
+            'symbol': "OR",
+            # 'region_id': self.region.id,
+            'status': STATUS.ACTIVE
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(City.objects.count(), 0)
+
+
 class EditCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
@@ -254,6 +296,60 @@ class EditRegionApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.region.country.id, self.country.id)
+
+class EditCityApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.city = create_city('test city', 'TSC', STATUS.ACTIVE)
+        self.region = create_region("test", "AM", STATUS.ACTIVE)
+
+    def post(self, body=None):
+        url = reverse('locations:edit_city')
+        return self.client.post(url, body, format="json")
+
+    def test_successfully_edit_city_name(self):
+        """
+        """
+        data = {
+            'city_id': self.city.id,
+            'name': "Addis Ababa"
+        }
+
+        response = self.post(body=data)
+
+        self.city.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.city.name, 'Addis Ababa')
+    
+    def test_successfully_edit_city_symbol(self):
+        """
+        """
+        data = {
+            'city_id': self.city.id,
+            'symbol': "NEW"
+        }
+
+        response = self.post(body=data)
+
+        self.city.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.city.symbol, 'NEW')
+    
+    def test_successfully_edit_city_region(self):
+        """
+        """
+        data = {
+            'city_id': self.city.id,
+            'region_id': self.region.id
+        }
+
+        response = self.post(body=data)
+
+        self.city.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.city.region.id, self.region.id)
 
 class ListCountryApiViewTests(APITestCase):
     def setUp(self) -> None:

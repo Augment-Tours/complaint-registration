@@ -38,6 +38,9 @@ class Region(Timestampable):
     # The status of this region
     status = models.CharField(choices=STATUS, max_length=10, default=STATUS.ACTIVE)
 
+    class Meta:
+        ordering = ['name']
+
 
 class City(Timestampable):
     # Name of the City (TODO: link to word)
