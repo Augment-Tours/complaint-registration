@@ -29,4 +29,4 @@ class ShilengaeUserSerializer(serializers.ModelSerializer):
     country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all())
     class Meta:
         model = ShilengaeUser
-        fields = ['id', 'first_name', 'last_name', 'status', 'last_login', 'country']
+        fields = ['id', 'first_name', 'last_name', 'username', 'status', 'last_login', 'country']

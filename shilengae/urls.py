@@ -24,7 +24,7 @@ urlpatterns = [
     re_path(r'^forms/', include('forms.urls')),
     re_path(r'^locations/', include(('locations.urls', 'locations'), namespace='locations')),
     re_path(r'^languages/', include('languages.urls')),
-    re_path(r'^users/', include('users.urls')),
+    re_path(r'^users/', include(('users.urls', 'users'))),
     re_path(r'^api/', include('api.urls')),
 ]
 

@@ -1,4 +1,5 @@
 from locations.models import Country, Region, City
+from users.models import ShilengaeUser
 from api.enums import STATUS
 
 def create_country(name, currency, symbol, timezone, status):
@@ -27,4 +28,24 @@ def create_city(name, symbol, status, region=None):
 
     return city
     
-    
+
+def create_user(username, password, country=None):
+    user = ShilengaeUser(username=username)
+    user.set_password(password)
+    user.first_name = 'test_first_name'
+    user.email = 'test@email.com'
+
+    if country and not isinstance(country, Country):
+        country = create_country(country, "TSC", "TSS", "EAT", STATUS.ACTIVE)
+    elif not country:
+        country = create_country("Test country", "TSC", "TSS", "EAT", STATUS.ACTIVE)
+
+    user.country = country
+    user.save()
+
+    return user
+
+def create_user_and_login(obj, username, password, country=None):
+    user = create_user(username, password, country)
+    obj.client.force_login(user)
+    return user
