@@ -1,9 +1,9 @@
 from django.urls import re_path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 urlpatterns = [
-    re_path(r'^token-auth/$', TokenObtainPairView.as_view()),
-    re_path(r'^token-refresh/$', TokenRefreshView.as_view()),
+    re_path(r'^token-auth/$', obtain_jwt_token),
+    re_path(r'^token-refresh/$', refresh_jwt_token),
 
     re_path(r'^rest-auth/', include('rest_auth.urls')),
     re_path(r'^rest-auth/registration/', include('rest_auth.registration.urls')),

@@ -10,6 +10,3 @@ class LoggedInUserApiView(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         
         return Response(self.get_serializer(request.user).data)
-
-class SignupUserApiView(generics.CreateAPIView):
-    serializer_class = ShilengaeUserSerializer

@@ -21,6 +21,9 @@ class Country(Timestampable):
 
     class Meta:
         ordering = ['name']
+    
+    def __str__(self):
+        return self.name
 
 class Region(Timestampable):
     # Name of the Region (TODO: link to word)

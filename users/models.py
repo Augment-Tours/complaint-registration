@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
+from locations.models import Country
+from api.models import Timestampable, Activatable
 
 # Create your models here.
-class ShilengaeUser(AbstractUser):
+class ShilengaeUser(AbstractUser, Timestampable, Activatable):
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
@@ -19,3 +21,10 @@ class ShilengaeUser(AbstractUser):
 
     first_name = models.CharField(max_length=50, blank=True)
     last_name = models.CharField(max_length=50, blank=True)
+
+    country = models.ForeignKey(Country, 
+                                related_name='+',
+                                null=True,
+                                on_delete=models.SET_NULL)
+
+    
