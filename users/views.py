@@ -1,6 +1,6 @@
+from django.db.models import Q
 from rest_framework import generics, permissions
 from rest_framework.response import Response
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from .serializers import ShilengaeUserSerializer
 from .models import ShilengaeUser
@@ -19,3 +19,20 @@ class UpdateUserApiView(generics.UpdateAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+class ListUsersApiView(generics.ListAPIView):
+    serializer_class = ShilengaeUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ShilengaeUser.objects.all()
+
+
+class SearchUserApiView(generics.ListAPIView):
+    serializer_class = ShilengaeUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search_term')
+        return ShilengaeUser.objects.filter(Q(username__icontains=search_term) |
+                                            Q(first_name__icontains=search_term) |
+                                            Q(last_name__icontains=search_term))

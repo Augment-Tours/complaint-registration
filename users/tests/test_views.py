@@ -26,3 +26,20 @@ class CreateCountryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.user.username, 'new_username')
+
+class SearchUserApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = create_user_and_login(self, "username", "password")
+
+    def get(self, search_term):
+        url = reverse('users:search_user') + "?search_term=" + search_term
+        return self.client.get(url)
+    
+    def test_successfully_search_countries_by_user_name(self):
+        """
+        Test successfully search countries by user name
+        """
+        response = self.get('username')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.user.id)

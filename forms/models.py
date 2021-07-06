@@ -3,6 +3,8 @@ from django import forms
 from model_utils import Choices
 from jsonfield import JSONField
 
+from api.models import Timestampable, Activatable
+
 # Create your models here.
 class Form(models.Model):
     name = models.CharField(max_length=200, unique=True)
@@ -28,3 +30,17 @@ class FormFieldResponse(models.Model):
 
     data = JSONField()
     # test
+
+
+class Category(Timestampable, Activatable):
+    name = models.CharField(max_length=100)
+
+    parent = models.ForeignKey('self',
+                                realted_name='children',
+                                null=True,
+                                on_delete=models.SET_NULL)
+    
+    ancestors = models.ManyToManyField('self',
+                                        related_name="descendants",
+                                        null=True,
+                                        on_delete=models.SET_NULL)
