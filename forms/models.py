@@ -36,11 +36,14 @@ class Category(Timestampable, Activatable):
     name = models.CharField(max_length=100)
 
     parent = models.ForeignKey('self',
-                                realted_name='children',
+                                related_name='children',
                                 null=True,
                                 on_delete=models.SET_NULL)
     
     ancestors = models.ManyToManyField('self',
-                                        related_name="descendants",
-                                        null=True,
-                                        on_delete=models.SET_NULL)
+                                        related_name='+',
+                                        symmetrical=False)
+
+    descendants = models.ManyToManyField('self',
+                                            related_name='+', 
+                                            symmetrical=False)

@@ -4,7 +4,6 @@ from rest_framework import serializers
 
 from .models import ShilengaeUser, Country
 from api.enums import STATUS
-from locations.serializers import CountrySerializer
 
 class ShilengaeUserSignupSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True, write_only=True)
