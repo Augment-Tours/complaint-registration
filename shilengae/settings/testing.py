@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
 
     'allauth',
     'allauth.account',
@@ -103,14 +105,36 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_FORMS = {'signup': 'users.forms.ShilengaeSignupForm'}
+
 WSGI_APPLICATION = 'shilengae.wsgi.application'
 
 # Rest Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
 
+REST_USE_JWT = True
+
+JWT_AUTH = {
+    # Allow refresh tokens to be used
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    # 'JWT_PAYLOAD_HANDLER': 'users.utils.custom_jwt_payload_handler',
+}
 # Configure Django App for Heroku.
 import django_heroku
 django_heroku.settings(locals())
