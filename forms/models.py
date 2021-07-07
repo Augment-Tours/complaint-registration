@@ -47,3 +47,12 @@ class Category(Timestampable, Activatable):
     descendants = models.ManyToManyField('self',
                                             related_name='+', 
                                             symmetrical=False)
+    def add_self_to_parent(self):
+        if self.parent:
+            self.ancestors.set(self.parent.ancestors.all()) 
+            self.ancestors.add(self.parent)
+
+            for ancestor in self.ancestors.all():
+                ancestor.descendants.add(self)
+
+        self.save()

@@ -11,14 +11,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     
     def save(self):
-        category = super().save()
-
-        if category.parent:
-            category.ancestors.set(category.parent.ancestors.all()) 
-            category.ancestors.add(category.parent)
-
-            for ancestor in category.ancestors.all():
-                ancestor.descendants.add(category)
-
+        category: Category = super().save()
+        category.add_self_to_parent()
 
         return category

@@ -8,7 +8,7 @@ from api.test_utils import create_user_and_login
 from locations.models import Country, Region, City
 
 
-class CreateCountryApiViewTests(APITestCase):
+class UpdateUserApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.user = create_user_and_login(self, "test_username", "123456")
 

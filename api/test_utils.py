@@ -1,5 +1,6 @@
 from locations.models import Country, Region, City
 from users.models import ShilengaeUser
+from forms.models import Category
 from api.enums import STATUS
 
 def create_country(name, currency, symbol, timezone, status):
@@ -44,6 +45,17 @@ def create_user(username, password, country=None):
     user.save()
 
     return user
+
+def create_category(name, children = []):
+    category = Category(name=name)
+    category.save()
+
+    for child in children:
+        child.parent = category
+        child.save()
+        child.add_self_to_parent()
+    
+    return category
 
 def create_user_and_login(obj, username, password, country=None):
     user = create_user(username, password, country)
