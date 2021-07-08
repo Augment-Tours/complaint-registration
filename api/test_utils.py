@@ -51,9 +51,7 @@ def create_category(name, children = []):
     category.save()
 
     for child in children:
-        child.parent = category
-        child.save()
-        child.add_self_to_parent()
+        child.add_parent(category)
     
     return category
 
