@@ -61,6 +61,23 @@ class CreateCategoryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+class SearchCategoryApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.parent: Category = create_category("Level 1")
+
+    def get(self, search_term):
+        url = reverse('forms:category_search') + "?search_term=" + search_term
+        return self.client.get(url)
+    
+    def test_successfully_search_category_by_name(self):
+        """
+        Test successfully search countries by country name
+        """
+        response = self.get('Level')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.parent.id)
+
 class UpdateCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.user = create_user_and_login(self, "username", "password")

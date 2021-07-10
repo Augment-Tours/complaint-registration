@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
@@ -22,3 +23,11 @@ class UpdateCategoryApiView(generics.UpdateAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+class SearchCategoryApiView(generics.ListAPIView):
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search_term')
+        return Category.objects.filter(Q(name__icontains=search_term))

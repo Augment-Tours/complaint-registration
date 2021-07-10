@@ -18,7 +18,7 @@ class CategorySerializer(serializers.ModelSerializer):
     
     def validate_name(self, value):
 
-        invalid = Category.objects.filter(parent=self.initial_data['parent'], name=self.initial_data['name']).exists()
+        invalid = Category.objects.filter(parent=self.initial_data.get('parent', None), name=self.initial_data.get('name', None)).exists()
         if invalid:
             raise serializers.ValidationError(f"There is already a category named {self.initial_data['name']} attached to the parent.")
 
