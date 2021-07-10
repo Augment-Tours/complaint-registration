@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category
+from .models import Category, Form, FormField
 from api.enums import STATUS
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -24,3 +24,14 @@ class CategorySerializer(serializers.ModelSerializer):
 
         return value
     
+class FormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Form
+        fields = ['id', 'name']
+
+
+class FormFieldSerializer(serializers.ModelSerializer):
+    form = serializers.PrimaryKeyRelatedField(queryset=Form.objects.all(), required=False)
+    class Meta:
+        model = FormField
+        fields = ['id', 'type', 'description', 'hint', 'label', 'position', 'form', 'data']

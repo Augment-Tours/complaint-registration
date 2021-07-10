@@ -9,12 +9,13 @@ from api.models import Timestampable, Activatable
 class Form(models.Model):
     name = models.CharField(max_length=200, unique=True)
 
-class FormField(models.Model):
+class FormField(Timestampable, Activatable):
     FORM_TYPE = Choices('textbox', 'multiline_textbox')
     type = models.CharField(choices=FORM_TYPE, max_length=50)
     description = models.CharField(max_length=200, null=True, blank=True)
     hint = models.CharField(max_length=50, null=True, blank=True)
     label = models.CharField(max_length=50, null=True, blank=True)
+    position = models.PositiveSmallIntegerField(unique=True, default=0)
 
     form = models.ForeignKey(Form,
                              related_name='form',
@@ -22,7 +23,7 @@ class FormField(models.Model):
                              on_delete=models.SET_NULL)
     data = JSONField()
 
-class FormFieldResponse(models.Model):
+class FormFieldResponse(Timestampable, Activatable):
     form_field = models.ForeignKey(FormField,
                                    related_name='form_field',
                                    null=True,
@@ -47,6 +48,11 @@ class Category(Timestampable, Activatable):
     descendants = models.ManyToManyField('self',
                                             related_name='+', 
                                             symmetrical=False)
+
+    form = models.ForeignKey(Form,
+                            related_name='categories',
+                            null=True,
+                            on_delete=models.SET_NULL)
     class Meta:
         ordering = ['name']
 
