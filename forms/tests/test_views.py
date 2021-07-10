@@ -8,6 +8,59 @@ from api.test_utils import create_user_and_login, create_category
 from forms.models import Category
 
 
+class CreateCategoryApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'username', 'password')
+        self.parent: Category = create_category("Level 1")
+        self.child_1: Category = create_category("CAT1")
+        self.child_1.add_parent(self.parent)
+
+    def post(self, body=None):
+        url = reverse('forms:category_create')
+        return self.client.post(url, body, format='json')
+
+    def test_success(self):
+        """
+        Test successfully creating a category 
+        """
+        data = {
+            'name': 'CAT1'
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], 'CAT1')
+
+    def test_children_with_different_name(self):
+        """
+        If two children with different names are created the request should pass
+        """
+        data = {
+            'name': 'CAT2',
+            'parent': self.parent.id,
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], 'CAT2')
+        self.assertEqual(response.data['parent'], self.parent.id)
+
+    def test_children_can_not_have_same_name(self):
+        """
+        If two children with the same name are trying to be created
+        then request should fail.
+        """
+        data = {
+            'name': 'CAT1',
+            'parent': self.parent.id,
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 class UpdateCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.user = create_user_and_login(self, "username", "password")
