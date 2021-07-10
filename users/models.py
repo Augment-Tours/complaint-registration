@@ -27,4 +27,5 @@ class ShilengaeUser(AbstractUser, Timestampable, Activatable):
                                 null=True,
                                 on_delete=models.SET_NULL)
 
-    
+    class Meta:
+        ordering = ['first_name']

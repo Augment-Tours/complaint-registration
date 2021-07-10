@@ -47,6 +47,9 @@ class Category(Timestampable, Activatable):
     descendants = models.ManyToManyField('self',
                                             related_name='+', 
                                             symmetrical=False)
+    class Meta:
+        ordering = ['name']
+
     def add_parent(self, parent):
         self.parent = parent
         self.add_self_to_parent()
