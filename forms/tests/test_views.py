@@ -4,8 +4,8 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from api.enums import STATUS
-from api.test_utils import create_user_and_login, create_category
-from forms.models import Category
+from api.test_utils import create_user_and_login, create_category, create_form
+from forms.models import Category, Form
 
 
 class CreateCategoryApiViewTests(APITestCase):
@@ -61,6 +61,7 @@ class CreateCategoryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+
 class SearchCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.parent: Category = create_category("Level 1")
@@ -68,7 +69,7 @@ class SearchCategoryApiViewTests(APITestCase):
     def get(self, search_term):
         url = reverse('forms:category_search') + "?search_term=" + search_term
         return self.client.get(url)
-    
+
     def test_successfully_search_category_by_name(self):
         """
         Test successfully search countries by country name
@@ -77,6 +78,7 @@ class SearchCategoryApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['id'], self.parent.id)
+
 
 class UpdateCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
@@ -90,7 +92,7 @@ class UpdateCategoryApiViewTests(APITestCase):
         url = reverse('forms:category_update', kwargs={'pk': pk})
 
         return self.client.post(url, body, format="json")
-    
+
     def test_successfully_update_category_name(self):
         """
         Successfully update a category name
@@ -98,15 +100,15 @@ class UpdateCategoryApiViewTests(APITestCase):
         data = {
             'name': "new name"
         }
-        
+
         response = self.post(self.parent.id, body=data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         self.parent.refresh_from_db()
 
         self.assertEqual(self.parent.name, "new name")
-    
+
     def test_successfully_update_category_by_attaching_children_to_parents(self):
         data = {
             'parent': self.parent.id
@@ -178,3 +180,48 @@ class UpdateCategoryApiViewTests(APITestCase):
         self.assertEqual(self.child_3.parent, self.child_2)
         # Child 2 should have 0 children
         self.assertEqual(self.child_2.children.count(), 1)
+
+
+class CreateFormApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'username', 'password')
+
+    def post(self, body=None):
+        url = reverse('forms:form_create')
+        return self.client.post(url, body, format='json')
+
+    def test_successfully_create_form(self):
+        data = {
+            'name': "FORM 1"
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Form.objects.count(), 1)
+
+class UpdateFormApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = create_user_and_login(self, "username", "password")
+        self.form = create_form('name')
+
+    def post(self, pk, body=None):
+        url = reverse('forms:form_update', kwargs={'pk': pk})
+
+        return self.client.post(url, body, format="json")
+
+    def test_successfully_update_form_name(self):
+        """
+        Successfully update a category name
+        """
+        data = {
+            'name': "new name"
+        }
+
+        response = self.post(self.form.id, body=data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.form.refresh_from_db()
+
+        self.assertEqual(self.form.name, "new name")
