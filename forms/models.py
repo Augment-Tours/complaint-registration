@@ -18,7 +18,7 @@ class FormField(Timestampable, Activatable):
     position = models.PositiveSmallIntegerField(unique=True, default=0)
 
     form = models.ForeignKey(Form,
-                             related_name='form',
+                             related_name='form_fields',
                              null=True,
                              on_delete=models.SET_NULL)
     data = JSONField()

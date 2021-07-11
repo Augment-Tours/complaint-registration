@@ -4,8 +4,8 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from api.enums import STATUS
-from api.test_utils import create_user_and_login, create_category, create_form
-from forms.models import Category, Form
+from api.test_utils import create_user_and_login, create_category, create_form, create_form_field
+from forms.models import Category, Form, FormField
 
 
 class CreateCategoryApiViewTests(APITestCase):
@@ -200,6 +200,29 @@ class CreateFormApiViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Form.objects.count(), 1)
 
+    def test_successfully_create_form_with_fields(self):
+        data = {
+            'name': "Form 1",
+            'form_fields': [
+                {
+                    "type": "textbox",
+                    "description": "",
+                    "hint": "",
+                    "label": "Name",
+                    "data": "{}"
+                },
+            ]
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Form.objects.count(), 1)
+        self.assertEqual(FormField.objects.count(), 1)
+        self.assertEqual(FormField.objects.first().form.id,
+                         Form.objects.first().id)
+
+
 class UpdateFormApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.user = create_user_and_login(self, "username", "password")
@@ -212,7 +235,7 @@ class UpdateFormApiViewTests(APITestCase):
 
     def test_successfully_update_form_name(self):
         """
-        Successfully update a category name
+        Successfully update a form name
         """
         data = {
             'name': "new name"
@@ -225,3 +248,85 @@ class UpdateFormApiViewTests(APITestCase):
         self.form.refresh_from_db()
 
         self.assertEqual(self.form.name, "new name")
+
+    def test_successfully_update_form_with_fields(self):
+        """
+        Successfully update form by adding fields
+        """
+        data = {
+            "form_fields": [
+                {
+                    "type": "textbox",
+                    "description": "",
+                    "hint": "",
+                    "label": "Name",
+                    "data": "{}"
+                },
+            ]
+        }
+
+        response = self.post(self.form.id, body=data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.form.form_fields.count(), 1)
+
+
+class CreateFormFieldApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'username', 'password')
+        self.form = create_form('name')
+
+
+    def post(self, body=None):
+        url = reverse('forms:form_field_create')
+        return self.client.post(url, body, format='json')
+
+    def test_successfully_create_form_field(self):
+        data = {
+            "type": "textbox",
+            "description": "",
+            "hint": "",
+            "label": "",
+            "data": "{}",
+            "form": self.form.id
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(self.form.form_fields.count(), 1)
+
+class UpdateFormFieldApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = create_user_and_login(self, "username", "password")
+        self.form = create_form('name')
+        self.form_field = create_form_field(
+            "textbox",
+            "test description",
+            "test hint",
+            "test label",
+            0,
+            self.form,
+            '{}'
+        )
+
+    def post(self, pk, body=None):
+        url = reverse('forms:form_field_update', kwargs={'pk': pk})
+
+        return self.client.post(url, body, format="json")
+
+    def test_successfully_update_form_field_label(self):
+        """
+        Successfully update a form name
+        """
+        data = {
+            'label': "new label"
+        }
+
+        response = self.post(self.form_field.id, body=data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.form_field.refresh_from_db()
+
+        self.assertEqual(self.form_field.label, "new label")

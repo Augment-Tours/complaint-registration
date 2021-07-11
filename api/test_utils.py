@@ -1,6 +1,6 @@
 from locations.models import Country, Region, City
 from users.models import ShilengaeUser
-from forms.models import Category, Form
+from forms.models import Category, Form, FormField, FormField
 from api.enums import STATUS
 
 def create_country(name, currency, symbol, timezone, status):
@@ -60,6 +60,20 @@ def create_form(name):
     form.save()
 
     return form
+
+def create_form_field(type, description, hint, label, position, form, data):
+    field = FormField(
+        type=type,
+        description=description,
+        hint=hint,
+        label=label,
+        position=position,
+        form=form,
+        data=data
+    )
+    field.save()
+
+    return field
 
 def create_user_and_login(obj, username, password, country=None):
     user = create_user(username, password, country)
