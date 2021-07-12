@@ -56,3 +56,17 @@ class UpdateFormFieldApiView(generics.UpdateAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+class SearchFormApiView(generics.ListAPIView):
+    serializer_class = FormSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        search_term = self.request.query_params.get('search_term')
+        return Form.objects.filter(Q(name__icontains=search_term))
+
+
+class ListFormApiView(generics.ListAPIView):
+    serializer_class = FormSerializer
+    queryset = Form.objects.all()
+    permission_classes = [permissions.AllowAny]

@@ -330,3 +330,20 @@ class UpdateFormFieldApiViewTests(APITestCase):
         self.form_field.refresh_from_db()
 
         self.assertEqual(self.form_field.label, "new label")
+
+class SearchFormApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.form = create_form('name')
+
+    def get(self, search_term):
+        url = reverse('forms:form_search') + "?search_term=" + search_term
+        return self.client.get(url)
+
+    def test_successfully_search_form_by_name(self):
+        """
+        Test successfully search forms by name
+        """
+        response = self.get('name')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'][0]['id'], self.form.id)

@@ -9,6 +9,9 @@ from api.models import Timestampable, Activatable
 class Form(models.Model):
     name = models.CharField(max_length=200, unique=True)
 
+    class Meta:
+        ordering = ['name']
+
 class FormField(Timestampable, Activatable):
     FORM_TYPE = Choices('textbox', 'multiline_textbox')
     type = models.CharField(choices=FORM_TYPE, max_length=50)
