@@ -8,7 +8,7 @@ from api.enums import STATUS
 class ShilengaeUserSignupSerializer(RegisterSerializer):
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
-    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), required=True, write_only=True)
+    country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all(), required=False, write_only=True)
     status = serializers.ChoiceField(choices=STATUS, write_only=True, required=True)
 
     def custom_signup(self, request, user):
@@ -26,6 +26,11 @@ class ShilengaeUserSignupSerializer(RegisterSerializer):
 
 class ShilengaeUserSerializer(serializers.ModelSerializer):
     country = serializers.PrimaryKeyRelatedField(queryset=Country.objects.all())
+    country_name = serializers.SerializerMethodField()
     class Meta:
         model = ShilengaeUser
-        fields = ['id', 'first_name', 'last_name', 'username', 'status', 'last_login', 'country']
+        fields = ['id', 'first_name', 'last_name', 'username', 'status', 'last_login', 'country', 'country_name']
+
+    def get_country_name(self, obj):
+        if obj.country:
+            return obj.country.name

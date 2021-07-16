@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 
 from .models import Country, Region, City
 
@@ -8,10 +9,11 @@ class CountrySerializer(ModelSerializer):
         fields = ['id', 'currency', 'name', 'symbol', 'timezone', 'status']
     
 class RegionSerializer(ModelSerializer):
-    country = CountrySerializer(read_only=True)
+    country = CountrySerializer
+    country_name = serializers.SerializerMethodField()
     class Meta:
         model = Region
-        fields = ['id', 'name', 'symbol', 'country', 'status']
+        fields = ['id', 'name', 'symbol', 'country', 'status', 'country_name']
     
     def create(self, validated_data):
         region = super().create(validated_data)
@@ -20,11 +22,15 @@ class RegionSerializer(ModelSerializer):
 
         return region
 
+    def get_country_name(self, obj):
+        return obj.country.name
+
 class CitySerializer(ModelSerializer):
     region = RegionSerializer
+    region_name = serializers.SerializerMethodField()
     class Meta:
         model = City
-        fields = ['id', 'name', 'symbol', 'region', 'status']
+        fields = ['id', 'name', 'symbol', 'region', 'status', 'region_name']
     
     def create(self, validated_data):
         city = super().create(validated_data)
@@ -32,3 +38,6 @@ class CitySerializer(ModelSerializer):
         city.save()
 
         return city
+
+    def get_region_name(self, obj):
+        return obj.region.name

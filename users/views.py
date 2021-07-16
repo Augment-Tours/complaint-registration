@@ -23,7 +23,7 @@ class UpdateUserApiView(generics.UpdateAPIView):
 
 class ListUsersApiView(generics.ListAPIView):
     serializer_class = ShilengaeUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     queryset = ShilengaeUser.objects.all()
 
 
