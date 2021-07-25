@@ -37,9 +37,11 @@ class FormSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     parent = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False)
     form = FormSerializer
+    parent_category_name = serializers.SerializerMethodField()
+    form_name = serializers.SerializerMethodField()
     class Meta:
         model = Category
-        fields = ['id', 'name', 'parent', 'form', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'parent', 'form', 'parent_category_name', 'form_name', 'created_at', 'updated_at']
 
     
     def create(self, validated_data):
@@ -57,3 +59,11 @@ class CategorySerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f"There is already a category named {self.initial_data['name']} attached to the parent.")
 
         return value
+
+    def get_parent_category_name(self, category):
+        if category.parent:
+            return category.parent.name
+    
+    def get_form_name(self, category):
+        if category.form:
+            return category.form.name
