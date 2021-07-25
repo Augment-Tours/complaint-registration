@@ -14,6 +14,8 @@ class CreateCategoryApiViewTests(APITestCase):
         self.parent: Category = create_category("Level 1")
         self.child_1: Category = create_category("CAT1")
         self.child_1.add_parent(self.parent)
+        self.form = create_form('name')
+
 
     def post(self, body=None):
         url = reverse('forms:category_create')
@@ -46,6 +48,21 @@ class CreateCategoryApiViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['name'], 'CAT2')
         self.assertEqual(response.data['parent'], self.parent.id)
+
+    def test_creating_category_with_forms_attached(self):
+        """
+        Test creating a category with a form attached to it
+        """
+        data ={
+            'name': 'CAT1',
+            'form': self.form.id,
+        }
+
+        response = self.post(data)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], 'CAT1')
+        self.assertEqual(response.data['form'], self.form.id)
 
     def test_children_can_not_have_same_name(self):
         """

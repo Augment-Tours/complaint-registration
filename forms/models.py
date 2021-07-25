@@ -13,18 +13,20 @@ class Form(models.Model):
         ordering = ['name']
 
 class FormField(Timestampable, Activatable):
-    FORM_TYPE = Choices('textbox', 'multiline_textbox')
+    FORM_TYPE = Choices('textbox', 'multiline_textbox', 'dropdown', 'radio', 'multi-select', 'image', 'file', 'date', 'date-range', 'range')
     type = models.CharField(choices=FORM_TYPE, max_length=50)
     description = models.CharField(max_length=200, null=True, blank=True)
     hint = models.CharField(max_length=50, null=True, blank=True)
     label = models.CharField(max_length=50, null=True, blank=True)
-    position = models.PositiveSmallIntegerField(unique=True, default=0)
+    position = models.PositiveSmallIntegerField(default=0)
 
     form = models.ForeignKey(Form,
                              related_name='form_fields',
                              null=True,
                              on_delete=models.SET_NULL)
     data = JSONField()
+    class Meta:
+        unique_together = ('position', 'form')
 
 class FormFieldResponse(Timestampable, Activatable):
     form_field = models.ForeignKey(FormField,

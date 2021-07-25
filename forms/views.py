@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
@@ -15,7 +16,22 @@ class TestView(generics.GenericAPIView):
 
 class CreateCategoryApiView(generics.CreateAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        form_id = request.data.get('form_id')
+        form = get_object_or_404(Form, pk=form_id)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(form=form)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class ListCategoriesApiView(generics.ListAPIView):
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Category.objects.all()
 
 class UpdateCategoryApiView(generics.UpdateAPIView):
     serializer_class = CategorySerializer
@@ -35,7 +51,7 @@ class SearchCategoryApiView(generics.ListAPIView):
 
 class CreateFormApiView(generics.CreateAPIView):
     serializer_class = FormSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 class UpdateFormApiView(generics.UpdateAPIView):
     serializer_class = FormSerializer
@@ -47,7 +63,7 @@ class UpdateFormApiView(generics.UpdateAPIView):
 
 class CreateFormFieldApiView(generics.CreateAPIView):
     serializer_class = FormFieldSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
 class UpdateFormFieldApiView(generics.UpdateAPIView):
     serializer_class = FormFieldSerializer
