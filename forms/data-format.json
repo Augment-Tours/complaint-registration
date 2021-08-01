@@ -85,8 +85,8 @@
     "hint": "",
     "label": "",
     "data": {
-      "min-date": "",
-      "max-date": ""
+      "startDate": "2021-07-30T21:00:00.000Z",
+      "endDate": "2021-08-09T21:00:00.000Z"
     }
   },
 

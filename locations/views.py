@@ -8,11 +8,11 @@ from .serializers import CountrySerializer, RegionSerializer, CitySerializer
 
 class CreateCountryApiView(generics.CreateAPIView):
     serializer_class = CountrySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 class CreateRegionApiView(generics.GenericAPIView):
     serializer_class = RegionSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         country_id = request.data.get('country_id')
@@ -26,7 +26,7 @@ class CreateRegionApiView(generics.GenericAPIView):
 
 class CreateCityApiView(generics.GenericAPIView):
     serializer_class = CitySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         region_id = request.data.get('region_id')
@@ -40,7 +40,7 @@ class CreateCityApiView(generics.GenericAPIView):
 
 class EditCountryApiView(generics.GenericAPIView):
     serializer_class = CountrySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         country_id = request.data.get("country_id")
@@ -54,7 +54,7 @@ class EditCountryApiView(generics.GenericAPIView):
 
 class EditRegionApiView(generics.GenericAPIView):
     serializer_class = RegionSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         region_id = request.data.get("region_id")
@@ -74,7 +74,7 @@ class EditRegionApiView(generics.GenericAPIView):
 
 class EditCityApiView(generics.GenericAPIView):
     serializer_class = CitySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         city_id = request.data.get("city_id")
@@ -95,22 +95,22 @@ class EditCityApiView(generics.GenericAPIView):
 class ListCountryApiView(generics.ListAPIView):
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 class ListRegionApiView(generics.ListAPIView):
     serializer_class = RegionSerializer
     queryset = Region.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 class ListCityApiView(generics.ListAPIView):
     serializer_class = CitySerializer
     queryset = City.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class SearchCountryApiView(generics.ListAPIView):
     serializer_class = CountrySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search_term')
@@ -119,7 +119,7 @@ class SearchCountryApiView(generics.ListAPIView):
 
 class SearchRegionApiView(generics.ListAPIView):
     serializer_class = RegionSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search_term')
@@ -128,7 +128,7 @@ class SearchRegionApiView(generics.ListAPIView):
 
 class SearchCityApiView(generics.ListAPIView):
     serializer_class = CitySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search_term')

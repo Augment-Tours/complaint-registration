@@ -16,7 +16,7 @@ class TestView(generics.GenericAPIView):
 
 class CreateCategoryApiView(generics.CreateAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         form_id = request.data.get('form_id')
@@ -30,7 +30,7 @@ class CreateCategoryApiView(generics.CreateAPIView):
 
 class ListCategoriesApiView(generics.ListAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Category.objects.all()
 
 class UpdateCategoryApiView(generics.UpdateAPIView):
@@ -43,7 +43,7 @@ class UpdateCategoryApiView(generics.UpdateAPIView):
 
 class SearchCategoryApiView(generics.ListAPIView):
     serializer_class = CategorySerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search_term')
@@ -51,7 +51,7 @@ class SearchCategoryApiView(generics.ListAPIView):
 
 class CreateFormApiView(generics.CreateAPIView):
     serializer_class = FormSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 class UpdateFormApiView(generics.UpdateAPIView):
     serializer_class = FormSerializer
@@ -63,7 +63,7 @@ class UpdateFormApiView(generics.UpdateAPIView):
 
 class CreateFormFieldApiView(generics.CreateAPIView):
     serializer_class = FormFieldSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
 class UpdateFormFieldApiView(generics.UpdateAPIView):
     serializer_class = FormFieldSerializer
@@ -75,7 +75,7 @@ class UpdateFormFieldApiView(generics.UpdateAPIView):
 
 class SearchFormApiView(generics.ListAPIView):
     serializer_class = FormSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         search_term = self.request.query_params.get('search_term')
@@ -85,4 +85,4 @@ class SearchFormApiView(generics.ListAPIView):
 class ListFormApiView(generics.ListAPIView):
     serializer_class = FormSerializer
     queryset = Form.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]

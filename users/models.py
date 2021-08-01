@@ -4,6 +4,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 
 from locations.models import Country
 from api.models import Timestampable, Activatable
+from model_utils import Choices
 
 # Create your models here.
 class ShilengaeUser(AbstractUser, Timestampable, Activatable):
@@ -26,6 +27,9 @@ class ShilengaeUser(AbstractUser, Timestampable, Activatable):
                                 related_name='+',
                                 null=True,
                                 on_delete=models.SET_NULL)
+
+    ROLE = Choices('SUPERADMIN', 'ADMIN', 'MODERATOR', 'GUEST', 'USER')
+    type = models.CharField(choices=ROLE, max_length=50, default=ROLE.GUEST)
 
     class Meta:
         ordering = ['first_name']
