@@ -8,7 +8,14 @@ class FormFieldSerializer(serializers.ModelSerializer):
     form = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
     class Meta:
         model = FormField
-        fields = ['id', 'type', 'description', 'hint', 'label', 'position', 'form', 'data']
+        fields = ['id', 'type', 'description', 'hint', 'label', 'position', 'is_required', 'form', 'data']
+    
+    def create(self, validated_data):
+        form_field: FormField = super().create(validated_data)
+        form_field.form = validated_data.get('form')
+        form_field.save()
+
+        return form_field
 class FormSerializer(serializers.ModelSerializer):
     form_fields = FormFieldSerializer(many=True, required=False)
     form_fields_count = serializers.SerializerMethodField()
@@ -51,6 +58,15 @@ class CategorySerializer(serializers.ModelSerializer):
         category.save()
 
         return category
+    
+    def update(self, instance: Category, validated_data):
+    #    instance.add_self_to_parent()
+        x = ""
+        instance.parent = validated_data.get('parent', instance.parent)
+        instance.name = validated_data.get('name', instance.name)
+        instance.save()
+        instance.add_self_to_parent()
+        return instance
     
     def validate_name(self, value):
 

@@ -19,6 +19,7 @@ class FormField(Timestampable, Activatable):
     hint = models.CharField(max_length=50, null=True, blank=True)
     label = models.CharField(max_length=50, null=True, blank=True)
     position = models.PositiveSmallIntegerField(default=0)
+    is_required = models.BooleanField(default=False)
 
     form = models.ForeignKey(Form,
                              related_name='form_fields',

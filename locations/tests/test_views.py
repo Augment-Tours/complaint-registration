@@ -4,12 +4,13 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from api.enums import STATUS
-from api.test_utils import create_country, create_region, create_city
+from api.test_utils import create_country, create_region, create_city, create_user_and_login
 from locations.models import Country, Region, City
 
 
 class CreateCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password', False)
         pass
 
     def post(self, body=None):
@@ -105,6 +106,7 @@ class CreateCountryApiViewTests(APITestCase):
     
 class CreateRegionApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.country = create_country("Ethiopia", "ETB", "ETH", "EAT", STATUS.ACTIVE)
 
     def post(self, body=None):
@@ -146,6 +148,7 @@ class CreateRegionApiViewTests(APITestCase):
 
 class CreateCityApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.region = create_region("test", "AM", STATUS.ACTIVE)
 
     def post(self, body=None):
@@ -188,6 +191,7 @@ class CreateCityApiViewTests(APITestCase):
 
 class EditCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
 
     def post(self, body=None):
@@ -244,6 +248,7 @@ class EditCountryApiViewTests(APITestCase):
 
 class EditRegionApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.region = create_region("test", "AM", STATUS.ACTIVE)
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
 
@@ -299,6 +304,7 @@ class EditRegionApiViewTests(APITestCase):
 
 class EditCityApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.city = create_city('test city', 'TSC', STATUS.ACTIVE)
         self.region = create_region("test", "AM", STATUS.ACTIVE)
 
@@ -354,6 +360,7 @@ class EditCityApiViewTests(APITestCase):
 class ListCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
+        self.user = create_user_and_login(self, 'test_username', 'test_password', self.country)
 
     def get(self):
         url = reverse('locations:list_country')
@@ -370,6 +377,7 @@ class ListCountryApiViewTests(APITestCase):
 
 class ListRegionApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.region = create_region("test region", "TEST", "CUR")
 
     def get(self):
@@ -387,6 +395,7 @@ class ListRegionApiViewTests(APITestCase):
 
 class ListCityApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.city = create_city("test city", "TEST", "CUR")
 
     def get(self):
@@ -406,6 +415,7 @@ class ListCityApiViewTests(APITestCase):
 class SearchCountryApiViewTests(APITestCase):
     def setUp(self) -> None:
         self.country = create_country("United Arab Emirates", "ETB", "ETH", "EAT", STATUS.ACTIVE)
+        self.user = create_user_and_login(self, 'test_username', 'test_password', self.country)
 
     def get(self, search_term):
         url = reverse('locations:search_country') + "?search_term=" + search_term
@@ -441,6 +451,7 @@ class SearchCountryApiViewTests(APITestCase):
 
 class SearchRegionApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.region = create_region("test region", "TEST", "CUR")
 
     def get(self, search_term):
@@ -476,6 +487,7 @@ class SearchRegionApiViewTests(APITestCase):
 
 class SearchCityApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.city = create_city("test city", "TEST", "CUR")
 
     def get(self, search_term):

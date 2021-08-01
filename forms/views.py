@@ -65,6 +65,16 @@ class CreateFormFieldApiView(generics.CreateAPIView):
     serializer_class = FormFieldSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def post(self, request, *args, **kwargs):
+        form_id = request.data.get('form_id')
+        form = get_object_or_404(Form, pk=form_id)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(form=form)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 class UpdateFormFieldApiView(generics.UpdateAPIView):
     serializer_class = FormFieldSerializer
     permission_classes = [permissions.IsAuthenticated]

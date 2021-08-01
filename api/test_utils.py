@@ -36,14 +36,15 @@ def create_user(username, password, country=None):
     user.first_name = 'test_first_name'
     user.email = 'test@email.com'
 
-    if country and not isinstance(country, Country):
+    if country == False:
+        pass
+    elif country and not isinstance(country, Country):
         country = create_country(country, "TSC", "TSS", "EAT", STATUS.ACTIVE)
+        user.country = country
     elif not country:
         country = create_country("Test country", "TSC", "TSS", "EAT", STATUS.ACTIVE)
-
-    user.country = country
+        user.country = country
     user.save()
-
     return user
 
 def create_category(name, children = []):

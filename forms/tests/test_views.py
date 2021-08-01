@@ -4,12 +4,13 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from api.enums import STATUS
-from api.test_utils import create_user_and_login, create_category, create_form, create_form_field
+from api.test_utils import create_user, create_user_and_login, create_category, create_form, create_form_field
 from forms.models import Category, Form, FormField
 
 
 class CreateCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, 'username', 'password')
         self.parent: Category = create_category("Level 1")
         self.child_1: Category = create_category("CAT1")
@@ -26,7 +27,8 @@ class CreateCategoryApiViewTests(APITestCase):
         Test successfully creating a category 
         """
         data = {
-            'name': 'CAT1'
+            'name': 'CAT1',
+            'form_id': self.form.id
         }
 
         response = self.post(data)
@@ -41,6 +43,7 @@ class CreateCategoryApiViewTests(APITestCase):
         data = {
             'name': 'CAT2',
             'parent': self.parent.id,
+            'form_id': self.form.id
         }
 
         response = self.post(data)
@@ -55,7 +58,7 @@ class CreateCategoryApiViewTests(APITestCase):
         """
         data ={
             'name': 'CAT1',
-            'form': self.form.id,
+            'form_id': self.form.id,
         }
 
         response = self.post(data)
@@ -72,6 +75,7 @@ class CreateCategoryApiViewTests(APITestCase):
         data = {
             'name': 'CAT1',
             'parent': self.parent.id,
+            'form_id': self.form.id
         }
 
         response = self.post(data)
@@ -81,6 +85,7 @@ class CreateCategoryApiViewTests(APITestCase):
 
 class SearchCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.parent: Category = create_category("Level 1")
 
     def get(self, search_term):
@@ -201,6 +206,7 @@ class UpdateCategoryApiViewTests(APITestCase):
 
 class CreateFormApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, 'username', 'password')
 
     def post(self, body=None):
@@ -242,6 +248,7 @@ class CreateFormApiViewTests(APITestCase):
 
 class UpdateFormApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, "username", "password")
         self.form = create_form('name')
 
@@ -290,6 +297,7 @@ class UpdateFormApiViewTests(APITestCase):
 
 class CreateFormFieldApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, 'username', 'password')
         self.form = create_form('name')
 
@@ -305,7 +313,8 @@ class CreateFormFieldApiViewTests(APITestCase):
             "hint": "",
             "label": "",
             "data": "{}",
-            "form": self.form.id
+            "is_required": False,
+            "form_id": self.form.id
         }
 
         response = self.post(data)
@@ -315,6 +324,7 @@ class CreateFormFieldApiViewTests(APITestCase):
 
 class UpdateFormFieldApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, "username", "password")
         self.form = create_form('name')
         self.form_field = create_form_field(
@@ -350,6 +360,7 @@ class UpdateFormFieldApiViewTests(APITestCase):
 
 class SearchFormApiViewTests(APITestCase):
     def setUp(self) -> None:
+        self.user = create_user_and_login(self, 'test_username', 'test_password')
         self.form = create_form('name')
 
     def get(self, search_term):
