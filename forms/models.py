@@ -6,7 +6,7 @@ from jsonfield import JSONField
 from api.models import Timestampable, Activatable
 
 # Create your models here.
-class Form(models.Model):
+class Form(Timestampable):
     name = models.CharField(max_length=200, unique=True)
 
     class Meta:

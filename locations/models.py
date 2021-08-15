@@ -8,10 +8,10 @@ class Country(Timestampable):
     currency = models.CharField(max_length=4)
 
     # Name of the Country (TODO: link to word)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     # Symbol of the country
-    symbol = models.CharField(max_length=5)
+    symbol = models.CharField(max_length=5, unique=True)
 
     # The timezone symbol of the country
     timezone = models.CharField(max_length=50, blank=True, null=True)
@@ -36,13 +36,15 @@ class Region(Timestampable):
     country = models.ForeignKey(Country,
                                 related_name='regions',
                                 on_delete=models.SET_NULL,
-                                null=True)
+                                null=True,
+                                blank=True)
 
     # The status of this region
     status = models.CharField(choices=STATUS, max_length=10, default=STATUS.ACTIVE)
 
     class Meta:
         ordering = ['name']
+        unique_together = ('country', 'symbol')
 
 
 class City(Timestampable):
@@ -56,10 +58,12 @@ class City(Timestampable):
     region = models.ForeignKey(Region,
                                 related_name='cities',
                                 on_delete=models.SET_NULL,
-                                null=True)
+                                null=True,
+                                blank=True)
 
     # The status of this city
     status = models.CharField(choices=STATUS, max_length=10, default=STATUS.ACTIVE)
 
     class Meta:
         ordering = ['name']
+        unique_together = ('region', 'symbol')

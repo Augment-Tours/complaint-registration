@@ -8,7 +8,7 @@ class FormFieldSerializer(serializers.ModelSerializer):
     form = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
     class Meta:
         model = FormField
-        fields = ['id', 'type', 'description', 'hint', 'label', 'position', 'is_required', 'form', 'data']
+        fields = ['id', 'type', 'description', 'hint', 'label', 'position', 'is_required', 'form', 'data', 'created_at']
     
     def create(self, validated_data):
         form_field: FormField = super().create(validated_data)
@@ -21,7 +21,7 @@ class FormSerializer(serializers.ModelSerializer):
     form_fields_count = serializers.SerializerMethodField()
     class Meta:
         model = Form
-        fields = ['id', 'name', 'form_fields', 'form_fields_count']
+        fields = ['id', 'name', 'form_fields', 'form_fields_count', 'created_at']
     
     def create(self, validated_data):
         fields_data = validated_data.pop('form_fields', [])
@@ -42,7 +42,7 @@ class FormSerializer(serializers.ModelSerializer):
         return obj.form_fields.count()
 
 class CategorySerializer(serializers.ModelSerializer):
-    parent = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False)
+    parent = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False, allow_null=True)
     form = FormSerializer
     parent_category_name = serializers.SerializerMethodField()
     form_name = serializers.SerializerMethodField()
@@ -54,14 +54,14 @@ class CategorySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         category: Category = super().create(validated_data)
         category.add_self_to_parent()
-        category.country = validated_data.get('country')
+        category.form = validated_data.get('form')
+        category.parent = validated_data.get('parent')
         category.save()
 
         return category
     
     def update(self, instance: Category, validated_data):
     #    instance.add_self_to_parent()
-        x = ""
         instance.parent = validated_data.get('parent', instance.parent)
         instance.name = validated_data.get('name', instance.name)
         instance.save()

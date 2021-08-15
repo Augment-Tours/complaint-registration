@@ -58,6 +58,7 @@ class CreateCategoryApiViewTests(APITestCase):
         """
         data ={
             'name': 'CAT1',
+            'parent': None,
             'form_id': self.form.id,
         }
 

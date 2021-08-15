@@ -134,3 +134,18 @@ class SearchCityApiView(generics.ListAPIView):
         search_term = self.request.query_params.get('search_term')
         return City.objects.filter(Q(name__icontains=search_term) |
                                     Q(symbol__icontains=search_term))
+class RegionDetailApiView(generics.RetrieveAPIView):
+    serializer_class = RegionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Region.objects.all()
+
+class CountryDetailApiView(generics.RetrieveAPIView):
+    serializer_class = CountrySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Country.objects.all()
+
+class CityDetailApiView(generics.RetrieveAPIView):
+    serializer_class = CitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = City.objects.all()
+
