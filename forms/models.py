@@ -13,7 +13,9 @@ class Form(Timestampable):
         ordering = ['name']
 
 class FormField(Timestampable, Activatable):
-    FORM_TYPE = Choices('textbox', 'multiline_textbox', 'dropdown', 'radio', 'multi-select', 'image', 'file', 'date', 'date-range', 'range')
+    FORM_TYPE = Choices('textbox', 'multiline_textbox', 'dropdown', 'radio', \
+                        'multi-select', 'image', 'file', 'date', 'date-range', \
+                        'range', 'region', 'city', 'price')
     type = models.CharField(choices=FORM_TYPE, max_length=50)
     description = models.CharField(max_length=200, null=True, blank=True)
     hint = models.CharField(max_length=50, null=True, blank=True)

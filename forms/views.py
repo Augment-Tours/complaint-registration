@@ -49,6 +49,12 @@ class SearchCategoryApiView(generics.ListAPIView):
         search_term = self.request.query_params.get('search_term')
         return Category.objects.filter(Q(name__icontains=search_term))
 
+class CategoryDetailApiView(generics.RetrieveAPIView):
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Category.objects.all()
+
+
 class CreateFormApiView(generics.CreateAPIView):
     serializer_class = FormSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -96,3 +102,19 @@ class ListFormApiView(generics.ListAPIView):
     serializer_class = FormSerializer
     queryset = Form.objects.all()
     permission_classes = [permissions.IsAuthenticated]
+
+class ListFieldsByFormApiView(generics.ListAPIView):
+    serializer_class = FormFieldSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        form_id = self.kwargs.get('pk', None)
+        return FormField.objects.filter(form=form_id)
+
+class ListFormFieldByCategoryApiView(generics.ListAPIView):
+    serializer_class = FormFieldSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        category_id = self.kwargs.get('pk', None)
+        return FormField.objects.filter(form__category=category_id)

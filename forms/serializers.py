@@ -48,7 +48,7 @@ class CategorySerializer(serializers.ModelSerializer):
     form_name = serializers.SerializerMethodField()
     class Meta:
         model = Category
-        fields = ['id', 'name', 'parent', 'form', 'parent_category_name', 'form_name', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'parent', 'form', 'parent_category_name', 'form_name', 'status', 'created_at', 'updated_at']
 
     
     def create(self, validated_data):
