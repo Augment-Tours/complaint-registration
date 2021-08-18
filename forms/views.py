@@ -117,4 +117,7 @@ class ListFormFieldByCategoryApiView(generics.ListAPIView):
 
     def get_queryset(self):
         category_id = self.kwargs.get('pk', None)
-        return FormField.objects.filter(form__category=category_id)
+        category = get_object_or_404(Category, pk=category_id)
+        # get all the forms attached to this category and it's list of ancestors field
+        forms = category.get_ancestors(include_self=True).values('form')
+        return FormField.objects.filter(form__in=forms)

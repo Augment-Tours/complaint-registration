@@ -30,6 +30,7 @@ class FormField(Timestampable, Activatable):
     data = JSONField()
     class Meta:
         unique_together = ('position', 'form')
+        ordering = ['position']
 
 class FormFieldResponse(Timestampable, Activatable):
     form_field = models.ForeignKey(FormField,
@@ -79,3 +80,11 @@ class Category(Timestampable, Activatable):
 
         self.save()
     
+    def get_ancestors(self, include_self):
+        """
+        get ancestors of categories including self
+        """
+        if include_self:
+            return self.ancestors.all() | Category.objects.filter(id=self.id)
+        else:
+            return self.ancestors.all()

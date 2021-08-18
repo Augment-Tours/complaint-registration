@@ -3,6 +3,9 @@ from users.models import ShilengaeUser
 from forms.models import Category, Form, FormField, FormField
 from api.enums import STATUS
 
+import string
+import random
+
 def create_country(name, currency, symbol, timezone, status):
     country = Country(name=name, currency=currency, symbol=symbol, timezone=timezone, status=status)
     country.save()
@@ -11,8 +14,13 @@ def create_country(name, currency, symbol, timezone, status):
 
 def create_region(name, symbol, status, country=None):
     region = Region(name=name, symbol=symbol, status=status)
+
+    currency = ''.join(random.choice(string.ascii_uppercase) for i in range(3))
+    symbol = ''.join(random.choice(string.ascii_uppercase) for i in range(3))
+    country_name = ''.join(random.choice(string.ascii_uppercase) for i in range(3))
+
     if country == None:
-        country = create_country('test country', 'CUR', 'SYM', 'EAT', STATUS.ACTIVE)
+        country = create_country(f'Country {country_name}', currency, symbol, 'EAT', STATUS.ACTIVE)
         country.save()
         region.country = country
     region.save()
@@ -36,19 +44,23 @@ def create_user(username, password, country=None):
     user.first_name = 'test_first_name'
     user.email = 'test@email.com'
 
+    currency = ''.join(random.choice(string.ascii_uppercase) for i in range(3))
+    symbol = ''.join(random.choice(string.ascii_uppercase) for i in range(3))
+    country_name = ''.join(random.choice(string.ascii_uppercase) for i in range(3))
+
     if country == False:
         pass
     elif country and not isinstance(country, Country):
-        country = create_country(country, "TSC", "TSS", "EAT", STATUS.ACTIVE)
+        country = create_country(country, currency, symbol, "EAT", STATUS.ACTIVE)
         user.country = country
     elif not country:
-        country = create_country("Test country", "TSC", "TSS", "EAT", STATUS.ACTIVE)
+        country = create_country(f"Country {country_name}", currency, symbol, "EAT", STATUS.ACTIVE)
         user.country = country
     user.save()
     return user
 
-def create_category(name, children = []):
-    category = Category(name=name)
+def create_category(name, children = [], form = None):
+    category = Category(name=name, form=form)
     category.save()
 
     for child in children:

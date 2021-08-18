@@ -10,13 +10,13 @@ from forms.models import Category, Form, FormField
 
 class CreateCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
-        self.user = create_user_and_login(self, 'test_username', 'test_password')
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, 'username', 'password')
         self.parent: Category = create_category("Level 1")
         self.child_1: Category = create_category("CAT1")
         self.child_1.add_parent(self.parent)
         self.form = create_form('name')
-
 
     def post(self, body=None):
         url = reverse('forms:category_create')
@@ -56,7 +56,7 @@ class CreateCategoryApiViewTests(APITestCase):
         """
         Test creating a category with a form attached to it
         """
-        data ={
+        data = {
             'name': 'CAT1',
             'parent': None,
             'form_id': self.form.id,
@@ -86,7 +86,8 @@ class CreateCategoryApiViewTests(APITestCase):
 
 class SearchCategoryApiViewTests(APITestCase):
     def setUp(self) -> None:
-        self.user = create_user_and_login(self, 'test_username', 'test_password')
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
         self.parent: Category = create_category("Level 1")
 
     def get(self, search_term):
@@ -207,7 +208,8 @@ class UpdateCategoryApiViewTests(APITestCase):
 
 class CreateFormApiViewTests(APITestCase):
     def setUp(self) -> None:
-        self.user = create_user_and_login(self, 'test_username', 'test_password')
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, 'username', 'password')
 
     def post(self, body=None):
@@ -249,7 +251,8 @@ class CreateFormApiViewTests(APITestCase):
 
 class UpdateFormApiViewTests(APITestCase):
     def setUp(self) -> None:
-        self.user = create_user_and_login(self, 'test_username', 'test_password')
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, "username", "password")
         self.form = create_form('name')
 
@@ -298,10 +301,10 @@ class UpdateFormApiViewTests(APITestCase):
 
 class CreateFormFieldApiViewTests(APITestCase):
     def setUp(self) -> None:
-        self.user = create_user_and_login(self, 'test_username', 'test_password')
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, 'username', 'password')
         self.form = create_form('name')
-
 
     def post(self, body=None):
         url = reverse('forms:form_field_create')
@@ -323,9 +326,11 @@ class CreateFormFieldApiViewTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(self.form.form_fields.count(), 1)
 
+
 class UpdateFormFieldApiViewTests(APITestCase):
     def setUp(self) -> None:
-        self.user = create_user_and_login(self, 'test_username', 'test_password')
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
         self.user = create_user_and_login(self, "username", "password")
         self.form = create_form('name')
         self.form_field = create_form_field(
@@ -359,9 +364,11 @@ class UpdateFormFieldApiViewTests(APITestCase):
 
         self.assertEqual(self.form_field.label, "new label")
 
+
 class SearchFormApiViewTests(APITestCase):
     def setUp(self) -> None:
-        self.user = create_user_and_login(self, 'test_username', 'test_password')
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
         self.form = create_form('name')
 
     def get(self, search_term):
@@ -376,3 +383,86 @@ class SearchFormApiViewTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'][0]['id'], self.form.id)
+
+
+class ListFormFieldByCategoryApiViewTests(APITestCase):
+    def setUp(self) -> None:
+        self.user = create_user_and_login(
+            self, 'test_username', 'test_password')
+
+        self.form_1 = create_form('form1')
+        self.form_field_1 = create_form_field(
+            "textbox",
+            "test description",
+            "test hint",
+            "test label",
+            0,
+            self.form_1,
+            '{}'
+        )
+
+        self.form_2 = create_form('form2')
+        self.form_field_2 = create_form_field(
+            "textbox",
+            "test description 2",
+            "test hint 2",
+            "test label 2",
+            1,
+            self.form_2,
+            '{}'
+        )
+
+        self.parent: Category = create_category("Level 1")
+        self.child_1: Category = create_category(
+            "Level 2 - 1")
+        self.child_2: Category = create_category("Level 2 - 2")
+        """
+        Test if you can de-attach a child from root parent and attach it to child_2
+            parent
+              |                          
+            child_1                          
+              |                          
+            child_2                                
+        """
+        self.child_1.add_parent(self.parent)
+        self.child_2.add_parent(self.child_1)
+
+    def get(self, category_id):
+        url = reverse('forms:category_fields',
+                      kwargs={'pk': category_id})
+        return self.client.get(url)
+
+    def test_successfully_list_form_field_by_category(self):
+        """
+        Test successfully list form field by category
+        """
+        self.parent.form = self.form_1
+        self.parent.save()
+
+        self.child_1.form = self.form_2
+        self.child_1.save()
+
+        response = self.get(self.child_2.pk)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(response.data['results'][0]['id'], self.form_field_1.id)
+        self.assertEqual(response.data['results'][1]['id'], self.form_field_2.id)
+    
+    def test_successfully_list_form_field_including_self_category(self):
+        """
+        Test successfully list form fields by category including the leaf
+        category
+        """
+        self.child_1.form = self.form_1
+        self.child_1.save()
+
+        self.child_2.form = self.form_2
+        self.child_2.save()
+
+        response = self.get(self.child_2.pk)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(response.data['results'][0]['id'], self.form_field_1.id)
+        self.assertEqual(response.data['results'][1]['id'], self.form_field_2.id)
