@@ -2,7 +2,8 @@ from django.urls import include, path, re_path
 from .views import CreateFormApiView, TestView, CreateCategoryApiView, UpdateCategoryApiView, \
     SearchCategoryApiView, CreateFormApiView, UpdateFormApiView, \
     CreateFormFieldApiView, UpdateFormFieldApiView, SearchFormApiView, ListFormApiView, ListCategoriesApiView, \
-    ListFieldsByFormApiView, CategoryDetailApiView, ListFormFieldByCategoryApiView
+    ListFieldsByFormApiView, CategoryDetailApiView, ListFormFieldByCategoryApiView, \
+    DeleteFormApiView
 
 urlpatterns = [
     re_path(r'^create/$', CreateFormApiView.as_view(),
@@ -13,6 +14,8 @@ urlpatterns = [
             name='form_search'),
     re_path(r'^all/$', ListFormApiView().as_view(),
             name='form_list'),
+    re_path(r'^delete/(?P<pk>\d+)/$', DeleteFormApiView().as_view(),
+            name='form_delete'),
     re_path(r'^test/$', TestView.as_view(), name='test'),
     re_path(r'^category/create/$', CreateCategoryApiView.as_view(),
             name='category_create'),

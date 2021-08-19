@@ -64,6 +64,7 @@ class CategorySerializer(serializers.ModelSerializer):
     #    instance.add_self_to_parent()
         instance.parent = validated_data.get('parent', instance.parent)
         instance.name = validated_data.get('name', instance.name)
+        instance.form = validated_data.get('form', instance.form)
         instance.save()
         instance.add_self_to_parent()
         return instance
@@ -71,6 +72,8 @@ class CategorySerializer(serializers.ModelSerializer):
     def validate_name(self, value):
 
         invalid = Category.objects.filter(parent=self.initial_data.get('parent', None), name=self.initial_data.get('name', None)).exists()
+        if self.instance and self.instance.name == value:
+            return value
         if invalid:
             raise serializers.ValidationError(f"There is already a category named {self.initial_data['name']} attached to the parent.")
 

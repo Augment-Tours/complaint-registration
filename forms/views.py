@@ -67,6 +67,14 @@ class UpdateFormApiView(generics.UpdateAPIView):
     def post(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+class DeleteFormApiView(generics.DestroyAPIView):
+    serializer_class = FormSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Form.objects.all()
+    
+    def post(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 class CreateFormFieldApiView(generics.CreateAPIView):
     serializer_class = FormFieldSerializer
     permission_classes = [permissions.IsAuthenticated]
