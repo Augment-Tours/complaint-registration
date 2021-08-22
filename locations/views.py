@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, serializers, status
 from rest_framework.response import Response
 
 from .models import Region, City, Country
@@ -15,7 +15,9 @@ class CreateRegionApiView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        country_id = request.data.get('country_id')
+        country_id = request.data.get('country_id', None)
+        if not country_id:
+            raise serializers.ValidationError('Country id is required.')
         country = get_object_or_404(Country, pk=country_id)
 
         serializer = self.get_serializer(data=request.data)

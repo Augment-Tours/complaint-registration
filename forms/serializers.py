@@ -41,6 +41,13 @@ class FormSerializer(serializers.ModelSerializer):
     def get_form_fields_count(self, obj):
         return obj.form_fields.count()
 
+    def validate_form_fields(self, value):
+        positions = set()
+        for field in value:
+            if field.get('position') in positions:
+                raise serializers.ValidationError('Fields must have unique positions.')
+            positions.add(field.get('position'))
+        return value
 class CategorySerializer(serializers.ModelSerializer):
     parent = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False, allow_null=True)
     form = FormSerializer
@@ -48,14 +55,19 @@ class CategorySerializer(serializers.ModelSerializer):
     form_name = serializers.SerializerMethodField()
     class Meta:
         model = Category
-        fields = ['id', 'name', 'parent', 'form', 'parent_category_name', 'form_name', 'status', 'created_at', 'updated_at']
+        fields = ['id', 'name', 'parent', 'form', 'level',
+                    'parent_category_name', 'form_name', 'status', 
+                    'created_at', 'updated_at']
 
     
     def create(self, validated_data):
         category: Category = super().create(validated_data)
         category.add_self_to_parent()
-        category.form = validated_data.get('form')
+        category.form = validated_data.get('form', None)
         category.parent = validated_data.get('parent')
+        if category.parent:
+            category.level = category.parent.level + 1
+
         category.save()
 
         return category

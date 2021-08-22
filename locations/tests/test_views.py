@@ -143,7 +143,7 @@ class CreateRegionApiViewTests(APITestCase):
 
         response = self.post(data)
 
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Region.objects.count(), 0)
 
 class CreateCityApiViewTests(APITestCase):
