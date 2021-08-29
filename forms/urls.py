@@ -4,13 +4,15 @@ from .views import CreateFormApiView, DeleteCategoryApiView, TestView, CreateCat
                         UpdateFormApiView, CreateFormFieldApiView, UpdateFormFieldApiView,\
                         SearchFormApiView, ListFormApiView, ListCategoriesApiView, \
                         ListFieldsByFormApiView, CategoryDetailApiView, ListFormFieldByCategoryApiView, \
-                        DeleteFormApiView
+                        DeleteFormApiView, FormDetailApiView
 
 urlpatterns = [
     re_path(r'^create/$', CreateFormApiView.as_view(),
             name='form_create'),
     re_path(r'^update/(?P<pk>\d+)/$',
             UpdateFormApiView.as_view(), name='form_update'),
+    re_path(r'^detail/(?P<pk>\d+)/$',
+            FormDetailApiView.as_view(), name='form_detail'),
     re_path(r'^search/$', SearchFormApiView().as_view(),
             name='form_search'),
     re_path(r'^all/$', ListFormApiView().as_view(),

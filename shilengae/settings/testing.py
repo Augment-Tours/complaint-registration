@@ -79,6 +79,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
+    "https://shilengae.netlify.app"
 ]
 
 ROOT_URLCONF = 'shilengae.urls'

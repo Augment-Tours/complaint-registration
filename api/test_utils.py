@@ -74,8 +74,9 @@ def create_form(name):
 
     return form
 
-def create_form_field(type, description, hint, label, position, form, data):
+def create_form_field(type, description, hint, name, label, position, form, data):
     field = FormField(
+        name=name,
         type=type,
         description=description,
         hint=hint,

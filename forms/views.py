@@ -139,6 +139,10 @@ class ListFormApiView(generics.ListAPIView):
     queryset = Form.objects.all()
     permission_classes = [permissions.IsAuthenticated]
 
+class FormDetailApiView(generics.RetrieveAPIView):
+    serializer_class = FormSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Form.objects.all()
 
 class ListFieldsByFormApiView(generics.ListAPIView):
     serializer_class = FormFieldSerializer
