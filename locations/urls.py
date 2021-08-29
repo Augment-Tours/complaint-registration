@@ -4,7 +4,8 @@ from .views import CreateCountryApiView, CreateRegionApiView, CreateCityApiView,
                     EditCountryApiView, EditRegionApiView, EditCityApiView, \
                     ListCountryApiView, ListRegionApiView, ListCityApiView, RegionDetailApiView, \
                     SearchCountryApiView, SearchRegionApiView, SearchCityApiView, \
-                    RegionDetailApiView, CityDetailApiView, CountryDetailApiView
+                    RegionDetailApiView, CityDetailApiView, CountryDetailApiView, \
+                    ListCitiesByRegionApiView
 
 urlpatterns = [
     re_path(r'^country/create/$', CreateCountryApiView().as_view(), name='create_country'),
@@ -24,4 +25,6 @@ urlpatterns = [
     re_path(r'^city/all/$', ListCityApiView().as_view(), name='list_city'),
     re_path(r'^city/search/$', SearchCityApiView().as_view(), name='search_city'),
     re_path(r'^city/detail/(?P<pk>\d+)$', CityDetailApiView().as_view(), name='detail_city'),
+    # get cities by regionId
+    re_path(r'^city/by_region/(?P<regionId>\d+)$', ListCitiesByRegionApiView().as_view(), name='detail_city_by_region'),
 ]

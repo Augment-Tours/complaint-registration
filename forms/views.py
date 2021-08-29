@@ -163,7 +163,7 @@ class ListFormFieldByCategoryApiView(generics.ListAPIView):
                         .filter(form__in=forms)\
                         .annotate(
                             level=Subquery(Category.objects.filter(id=OuterRef('form')).values('level')))\
-                        .order_by('label', '-level')\
-                        .distinct('label')
+                        .order_by('name', 'type', '-level')\
+                        .distinct('name', 'type')
 
         return FormField.objects.filter(id__in=fields).order_by('position')
