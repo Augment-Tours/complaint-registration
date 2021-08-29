@@ -7,6 +7,5 @@ DATABASES = {
         'USER': 'qfabzxxrlgwpyo',
         'PASSWORD': '2bfce99275f58fcdaab244db27347d19f0ebc3c91455721e3797cf6b7a77da04',
         'NAME': 'd3qvf8bequhmqq',
-        'TIME_ZONE': 'Asia/Tokyo'
     }
 }
