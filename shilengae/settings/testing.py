@@ -149,9 +149,6 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
     # 'JWT_PAYLOAD_HANDLER': 'users.utils.custom_jwt_payload_handler',
 }
-# Configure Django App for Heroku.
-import django_heroku
-django_heroku.settings(locals())
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -212,3 +209,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
