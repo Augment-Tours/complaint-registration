@@ -20,7 +20,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     re_path(r'^forms/', include(('forms.urls', 'forms'))),
     re_path(r'^locations/', include(('locations.urls', 'locations'), namespace='locations')),
     re_path(r'^languages/', include('languages.urls')),

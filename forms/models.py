@@ -4,12 +4,13 @@ from model_utils import Choices
 from jsonfield import JSONField
 
 from api.models import Timestampable, Activatable
-
+from locations.models import Country
 # Create your models here.
 
 
 class Form(Timestampable):
     name = models.CharField(max_length=200, unique=True)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, related_name="forms")
 
     class Meta:
         ordering = ['name']
@@ -70,6 +71,9 @@ class Category(Timestampable, Activatable):
                              on_delete=models.SET_NULL)
 
     level = models.IntegerField(default=1)
+    
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, related_name="categories")
+
 
     class Meta:
         ordering = ['name']

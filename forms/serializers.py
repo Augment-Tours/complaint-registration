@@ -4,11 +4,18 @@ from .models import Category, Form, FormField
 from api.enums import STATUS
 
 
+class FormFieldListSerializer(serializers.ListSerializer):
+    class Meta:
+        model = FormField
+        fields = ['id', 'type', 'description', 'hint', 'name', 'label',
+                  'position', 'is_required', 'form', 'data', 'created_at']
+
 class FormFieldSerializer(serializers.ModelSerializer):
     form = serializers.PrimaryKeyRelatedField(required=False, read_only=True)
 
     class Meta:
         model = FormField
+        list_serializer_class = FormFieldListSerializer
         fields = ['id', 'type', 'description', 'hint', 'name', 'label',
                   'position', 'is_required', 'form', 'data', 'created_at']
 
@@ -36,13 +43,29 @@ class FormSerializer(serializers.ModelSerializer):
         return form
 
     def update(self, instance, validated_data):
-        fields_data = validated_data.pop('form_fields', [])
-        self.add_fields_to_form(instance, fields_data)
+        validated_field_data = validated_data.pop('form_fields', [])
+        fields_data = self.initial_data['form_fields']
+
+        for field_data in fields_data:
+            if 'id' not in field_data:
+                self.add_field_to_form(instance, field_data)
+            else:
+                field = FormField.objects.get(id=field_data.get('id'))
+                field_serializer = FormFieldSerializer(field, data=field_data)
+                field_serializer.is_valid(raise_exception=True)
+                field_serializer.save()
+
         return super().update(instance, validated_data)
 
     def add_fields_to_form(self, instance, fields_data):
         for field_data in fields_data:
-            FormField.objects.create(form=instance, **field_data)
+            self.add_field_to_form(instance, field_data)
+    
+    def add_field_to_form(self, instance, field_data):
+        field_serializer = FormFieldSerializer(data=field_data)
+        field_serializer.is_valid(raise_exception=True)
+        field = field_serializer.save(form=instance, data=field_data)
+        return field
 
     def get_form_fields_count(self, obj):
         return obj.form_fields.count()

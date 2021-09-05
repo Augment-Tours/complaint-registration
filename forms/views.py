@@ -88,6 +88,7 @@ class UpdateFormApiView(generics.UpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Form.objects.all()
 
+    @transaction.atomic()
     def post(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 

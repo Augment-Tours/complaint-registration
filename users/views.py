@@ -32,7 +32,7 @@ class SearchUserApiView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        search_term = self.request.query_params.get('search_term')
+        search_term = self.request.query_params.get('search_term', '')
         return ShilengaeUser.objects.filter(Q(username__icontains=search_term) |
                                             Q(first_name__icontains=search_term) |
                                             Q(last_name__icontains=search_term))
