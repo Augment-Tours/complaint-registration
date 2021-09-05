@@ -1,6 +1,22 @@
 # Shilengae Backend Setup
 
-How to setup Postgres Database on Linux.
+Welcome to the **Shilengae** backend repository. This file documents the development environment for this project. Shilengae Backend is implemented in [Python 3.7.0](https://www.python.org/downloads/release/python-370/).
+
+## Installing Python, PIP and Virtualenv
+
+1. Install Python [Python 3.7.0](https://www.python.org/downloads/release/python-370/) or later.
+2. Check if pip is already installed with Python via `pip --version`. If not, [install it](https://pip.pypa.io/en/stable/installing/).
+3. [Install git](https://git-scm.com/download/) if not already installed (check with `git --version`).
+4. Install virtualenv with `pip install virtualenv`.
+
+## Setting up your workspace
+
+1. Clone the repository with `git clone git@github.com:Shilengae/shilengae-v2-backend.git`.
+2. In your repo directory create a new virtualenv with `virtualenv -p python venv`.
+3. Activate your new virtualenv with `source venv/bin/activate` (on Mac, Linux) or `source venv/Scripts/activate` (Windows via Git Bash). This should show the `(venv)` prefix on your command line prompt. You can exit the virtualenv with `deactivate`.
+4. With `(venv)` activated, install Django and other requirements with `pip install -U -r requirements.txt`.
+
+## Setting up your database
 
 Install PostgreSQL from PostgreSQL Apt Repository
 
@@ -46,3 +62,9 @@ a) Enter an interactive Postgres session by typing:
 
     i) Exit the SQL prompt to return to the postgres user shell session:
     ```\q```
+
+(Optional but Recommended) Install pgAdmin, which is a GUI database management tool for PostgreSQL using this [link](https://www.pgadmin.org/download/pgadmin-4-apt/).
+
+## Development workflow
+
+The 'master' branch always contains the live version of the server. NEVER develop directly on the master branch. When you want to make a change, create a new branch while on 'master' with `git branch new-branch-name` and `git checkout new-branch-name`. After you create your commit locally, run `git push origin new-branch-name` to push your changes to bitbucket. Then go on bitbucket and under "Pull requests" click "create a pull request" and select your branch. Once your changes have been reviewed and approved, they will be merged in to 'master'.
