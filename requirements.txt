@@ -27,3 +27,9 @@ six==1.16.0
 
 # For enabling cors headers
 django-cors-headers==3.7.0 
+
+# For adding images to models
+pillow==8.3.2
+
+# For auto generating one to one fields
+django-annoying==0.10.6
