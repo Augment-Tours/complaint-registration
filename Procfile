@@ -1,1 +1,1 @@
-web: gunicorn shilengae.wsgi
+web: gunicorn security_project.wsgi
