@@ -10,8 +10,3 @@ if os.getenv(ENV_KEY, None) == PROD_APPLICATION_ID:
 else:
     # TODO: change to testing
     from .testing import *
-
-
-cred = credentials.Certificate(os.path.join(
-    BASE_DIR, 'settings/firebase_key.json'))
-default_app = firebase_admin.initialize_app(cred)

@@ -15,8 +15,17 @@ class Timestampable(models.Model):
         return True if self.updated_at else False
 
 class Activatable(models.Model):
-    # The status of this city
     status = models.CharField(choices=STATUS, max_length=10, default=STATUS.ACTIVE)
 
     class Meta:
         abstract = True
+
+class Feedback(Timestampable):
+    subject = models.CharField(max_length=100)
+    feedback = models.TextField()
+    file = models.FileField(upload_to='feedback/', null=True, blank=True)
+    
+    user = models.ForeignKey('users.CRUser', on_delete=models.CASCADE, null=True, blank=True)
+    
+    def __str__(self):
+        return self.feedback

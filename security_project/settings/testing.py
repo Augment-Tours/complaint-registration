@@ -26,7 +26,7 @@ SECRET_KEY = '7x$$&w*s7n)@l0df#cemg2(kge=i(fvwgud(d*ewul9y(5t+mm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'security_project-server.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'security_project-server.herokuapp.com']
 
 
 # Application definition
@@ -49,17 +49,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # 
-    'forms',
-
-    #
     'api',
-
-    #
-    'languages',
-
-    #
-    'locations',
-
+    
     #
     'users'
 ]
@@ -102,7 +93,7 @@ TEMPLATES = [
 
 
 # Django all auth settings
-AUTH_USER_MODEL = 'users.ShilengaeUser'
+AUTH_USER_MODEL = 'users.CRUser'
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -114,13 +105,15 @@ AUTHENTICATION_BACKENDS = [
 
 SITE_ID = 1
 
+SITE_URL = "http://localhost:8000"
+
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_EMAIL_REQUIRED = False
 
-ACCOUNT_FORMS = {'signup': 'users.forms.ShilengaeSignupForm'}
+# ACCOUNT_FORMS = {'signup': 'users.forms.ShilengaeSignupForm'}
 
-WSGI_APPLICATION = 'shilengae.wsgi.application'
+WSGI_APPLICATION = 'security_project.wsgi.application'
 
 # Rest Framework settings
 REST_FRAMEWORK = {
@@ -138,7 +131,7 @@ REST_FRAMEWORK = {
 
 # This is for adding our own logic to the registration process, i.e., create a profile for a newly registered user
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "users.serializers.ShilengaeUserSignupSerializer"
+    "REGISTER_SERIALIZER": "users.serializers.CRUserSignupSerializer"
 }
 
 REST_USE_JWT = True
