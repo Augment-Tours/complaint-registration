@@ -19,6 +19,20 @@ class Activatable(models.Model):
 
     class Meta:
         abstract = True
+    
+    def deactivate(self):
+        self.status = STATUS.INACTIVE
+        self.save()
+    
+    def activate(self):
+        self.status = STATUS.ACTIVE
+        self.save()
+    
+    def toggle(self):
+        if self.status == STATUS.INACTIVE:
+            self.activate()
+        else:
+            self.deactivate()
 
 class Feedback(Timestampable):
     subject = models.CharField(max_length=100)
