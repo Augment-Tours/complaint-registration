@@ -24,3 +24,9 @@ class CRUserSignupSerializer(RegisterSerializer):
 
     def save(self, request):
         return super(CRUserSignupSerializer, self).save(request)
+
+class CRUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CRUser
+        fields = ('id', 'first_name', 'last_name', 'email', 'type', 'status')
+        

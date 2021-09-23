@@ -3,10 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
 # Create your models here.
-from api.models import Timestampable
+from api.models import Timestampable, Activatable
 from model_utils import Choices
 
-class CRUser(AbstractUser, Timestampable):
+class CRUser(AbstractUser, Timestampable, Activatable):
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
@@ -23,7 +23,7 @@ class CRUser(AbstractUser, Timestampable):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     
-    TYPE = Choices('MEMBER', 'MODERATOR')
+    TYPE = Choices('MEMBER', 'PRIVILEGED_MEMBER', 'MODERATOR')
     type = models.CharField(max_length=50, choices=TYPE, default=TYPE.MEMBER)
 
 

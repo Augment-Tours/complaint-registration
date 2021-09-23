@@ -6,6 +6,10 @@ from rest_framework import serializers
 
 from .serializers import FeedbackSerializer
 from .models import Feedback
+from .permissions import ModeratorPermissions, FeedbackUpdatePermissions
+
+from users.models import CRUser
+from users.serializers import CRUserSerializer
 
 class ListOwnedFeedbackApiView(generics.ListAPIView):
     serializer_class = FeedbackSerializer
@@ -23,8 +27,32 @@ class CreateFeedbackApiView(generics.CreateAPIView):
 
 class UpdateFeedbackApiView(generics.UpdateAPIView):
     serializer_class = FeedbackSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [FeedbackUpdatePermissions]
     queryset = Feedback.objects.all()
 
     def post(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+class ToggleMemberAccountStatus(generics.GenericAPIView):
+    serializer_class = CRUserSerializer
+    permission_classes = [ModeratorPermissions]
+
+    def post(self, request, *args, **kwargs):
+        user: CRUser = get_object_or_404(CRUser, pk=kwargs['pk'])
+
+        # do not deactivate if user is also moderator
+        if user.type == CRUser.TYPE.MODERATOR:
+            return Response({"message": "You are not allowed to disable this user"}, status=403)
+
+        user.toggle()
+
+        return Response({"message": "User account disabled"}, status=200)
+
+class ViewAllMembersFeedbacks(generics.GenericAPIView):
+    serializer_class = FeedbackSerializer
+    permission_classes = [ModeratorPermissions]
+
+    def get(self, request, *args, **kwargs):
+        feedbacks = Feedback.objects.all()
+        serializer = self.get_serializer(feedbacks, many=True)
+        return Response(serializer.data)
