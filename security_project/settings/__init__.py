@@ -1,5 +1,3 @@
-from firebase_admin import credentials
-import firebase_admin
 import os
 
 ENV_KEY = 'HEROKU_PROJECT'

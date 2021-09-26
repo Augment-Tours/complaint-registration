@@ -13,13 +13,13 @@ class CRUserSignupSerializer(RegisterSerializer):
     email = serializers.EmailField(required=False, allow_blank=True)
 
     type = serializers.ChoiceField(
-        choices=CRUser.TYPE, write_only=True, required=True)
+        choices=CRUser.TYPE, write_only=True, required=False)
 
     def custom_signup(self, request, user):
         user.first_name = self.validated_data.get('first_name')
         user.last_name = self.validated_data.get('last_name')
         user.email = self.validated_data.get('email')
-        user.type = self.validated_data.get('type')
+        # user.type = self.validated_data.get('type')
         user.save()
 
     def save(self, request):

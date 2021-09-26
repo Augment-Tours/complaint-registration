@@ -34,5 +34,5 @@ pillow==8.3.2
 # For auto generating one to one fields
 django-annoying==0.10.6
 
-# Add Firebase admin sdk
-firebase-admin==5.0.0
+# honeypotting
+django-admin-honeypot==1.1.0
