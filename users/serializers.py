@@ -28,5 +28,5 @@ class CRUserSignupSerializer(RegisterSerializer):
 class CRUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CRUser
-        fields = ('id', 'first_name', 'last_name', 'email', 'type', 'status')
+        fields = ('id', 'username', 'first_name', 'last_name', 'email', 'type', 'status')
         

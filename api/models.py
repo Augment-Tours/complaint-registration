@@ -22,10 +22,12 @@ class Activatable(models.Model):
     
     def deactivate(self):
         self.status = STATUS.INACTIVE
+        self.is_active = False
         self.save()
     
     def activate(self):
         self.status = STATUS.ACTIVE
+        self.is_active = True
         self.save()
     
     def toggle(self):
