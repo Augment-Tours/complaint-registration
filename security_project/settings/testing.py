@@ -26,7 +26,7 @@ SECRET_KEY = '7x$$&w*s7n)@l0df#cemg2(kge=i(fvwgud(d*ewul9y(5t+mm'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'security_project-server.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'security_project-server.herokuapp.com', 'https://security-project.netlify.app/']
 
 
 # Application definition
@@ -72,7 +72,7 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
-    "https://security_project.netlify.app"
+    "https://security-project.netlify.app"
 ]
 
 ROOT_URLCONF = 'security_project.urls'
