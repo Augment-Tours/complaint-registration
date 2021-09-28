@@ -7,4 +7,4 @@ if os.getenv(ENV_KEY, None) == PROD_APPLICATION_ID:
     from .production import *
 else:
     # TODO: change to testing
-    from .testing import *
+    from .production import *

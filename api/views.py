@@ -5,6 +5,7 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework import serializers
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 
 from .serializers import FeedbackSerializer
 from .models import Feedback
@@ -28,7 +29,7 @@ class ListAllFeedbackApiView(generics.ListAPIView):
     permission_classes = [ModeratorPermissions]
     queryset = Feedback.objects.all()
 
-
+# @method_decorator(csrf_protect, name='dispatch')
 class CreateFeedbackApiView(generics.CreateAPIView):
     serializer_class = FeedbackSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -80,3 +81,10 @@ class LoggedInProfile(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class GetCSRFToken(generics.GenericAPIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, format=None):
+        return Response({'success': 'CSRF cookie set'})
