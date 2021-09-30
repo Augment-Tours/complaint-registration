@@ -38,7 +38,6 @@ def create_city(name, symbol, status, region=None):
     
 
 def create_user(username, password, country=None):
-    user = ShilengaeUser(username=username)
     user.set_password(password)
     user.first_name = 'test_first_name'
     user.email = 'test@email.com'
