@@ -1,5 +1,4 @@
 from locations.models import Country, Region, City
-from users.models import ShilengaeUser
 from forms.models import Category, Form, FormField, FormField
 from api.enums import STATUS
 
