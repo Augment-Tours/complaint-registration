@@ -116,8 +116,6 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_EMAIL_REQUIRED = False
 
-# ACCOUNT_FORMS = {'signup': 'users.forms.ShilengaeSignupForm'}
-
 WSGI_APPLICATION = 'security_project.wsgi.application'
 
 # Rest Framework settings
